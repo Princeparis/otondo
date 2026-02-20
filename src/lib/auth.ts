@@ -22,6 +22,7 @@ export const lucia = new Lucia(adapter, {
       name: attributes.name,
       role: attributes.role,
       isActive: attributes.isActive,
+      avatarUrl: attributes.avatarUrl,
     };
   },
 });

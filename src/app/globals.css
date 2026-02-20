@@ -1,26 +1,149 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.625rem;
+  /* Warm neutrals — high legibility, minimal, children-friendly */
+  --background: #fafaf8;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #fafaf8;
+  --secondary: #f0eeeb;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f0eeeb;
+  --muted-foreground: #78756f;
+  --accent: #f0eeeb;
+  --accent-foreground: #1a1a1a;
+  --destructive: #dc4a3f;
+  --border: #e6e4e0;
+  --input: #e6e4e0;
+  --ring: #1a1a1a;
+  --chart-1: #e8927c;
+  --chart-2: #7ab5a0;
+  --chart-3: #6b8ab5;
+  --chart-4: #c4a46d;
+  --chart-5: #b07eb5;
+  /* Admin sidebar — clean slate background */
+  --sidebar: #fafaf8;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #1a1a1a;
+  --sidebar-primary-foreground: #fafaf8;
+  --sidebar-accent: #f0eeeb;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e6e4e0;
+  --sidebar-ring: #1a1a1a;
+}
+
+.dark {
+  --background: #111110;
+  --foreground: #ededec;
+  --card: #1c1c1a;
+  --card-foreground: #ededec;
+  --popover: #1c1c1a;
+  --popover-foreground: #ededec;
+  --primary: #ededec;
+  --primary-foreground: #111110;
+  --secondary: #262624;
+  --secondary-foreground: #ededec;
+  --muted: #262624;
+  --muted-foreground: #a1a09c;
+  --accent: #262624;
+  --accent-foreground: #ededec;
+  --destructive: #e5534b;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #a1a09c;
+  --chart-1: #e8927c;
+  --chart-2: #7ab5a0;
+  --chart-3: #6b8ab5;
+  --chart-4: #c4a46d;
+  --chart-5: #b07eb5;
+  --sidebar: #1c1c1a;
+  --sidebar-foreground: #ededec;
+  --sidebar-primary: #ededec;
+  --sidebar-primary-foreground: #1c1c1a;
+  --sidebar-accent: #262624;
+  --sidebar-accent-foreground: #ededec;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #a1a09c;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }

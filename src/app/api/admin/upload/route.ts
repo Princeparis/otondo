@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateRequest } from "@/lib/auth.server";
-import { getSignedUploadUrl } from "@/lib/services/mediaService";
+import { uploadBufferToR2 } from "@/lib/services/mediaService";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,9 +12,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { fileName, contentType, folder } = await req.json();
+    const formData = await req.formData();
+    const file = formData.get("file") as File | null;
+    const folder = formData.get("folder") as string;
 
-    if (!fileName || !contentType || !["covers", "audio"].includes(folder)) {
+    if (!file || !["covers", "audio"].includes(folder)) {
       return NextResponse.json(
         {
           error: { code: "BAD_REQUEST", message: "Invalid upload parameters" },
@@ -23,20 +25,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const uploadData = await getSignedUploadUrl({
-      fileName,
-      contentType,
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const uploadData = await uploadBufferToR2({
+      buffer,
+      contentType: file.type,
+      fileName: file.name,
       folder: folder as "covers" | "audio",
     });
 
-    return NextResponse.json(uploadData);
+    return NextResponse.json({
+      uploadUrl: null, // No longer using presigned URLs
+      publicUrl: uploadData.publicUrl,
+      key: uploadData.key,
+    });
   } catch (e) {
-    console.error("Failed to generate upload URL:", e);
+    console.error("Failed to upload file:", e);
     return NextResponse.json(
       {
         error: {
           code: "INTERNAL_ERROR",
-          message: "Failed to generate upload URL",
+          message: "Failed to upload file",
         },
       },
       { status: 500 },

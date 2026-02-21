@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UploadCloud } from "lucide-react";
+import { uploadStoryMedia } from "@/app/admin/(protected)/stories/actions";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters."),
@@ -39,7 +40,17 @@ const formSchema = z.object({
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
 });
 
-export function StoryEditorForm() {
+interface StoryEditorFormProps {
+  initialData?: any;
+  isEditing?: boolean;
+  storyId?: string;
+}
+
+export function StoryEditorForm({
+  initialData,
+  isEditing = false,
+  storyId,
+}: StoryEditorFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     [],
@@ -60,60 +71,82 @@ export function StoryEditorForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      body: "",
-      categoryId: "",
-      isFeatured: false,
-      ageRangeMin: 3,
-      ageRangeMax: 8,
-      status: "DRAFT",
+      title: initialData?.title || "",
+      description: initialData?.shortDescription || "",
+      body: initialData?.body ? JSON.parse(initialData.body) : "",
+      categoryId: initialData?.categoryId || "",
+      isFeatured: initialData?.isFeatured || false,
+      ageRangeMin: initialData?.ageRangeMin || 3,
+      ageRangeMax: initialData?.ageRangeMax || 8,
+      status: initialData?.status || "DRAFT",
     },
   });
 
-  async function handleFileUpload(file: File, folder: "covers" | "audio") {
+  const handleFileUpload = async (file: File, folder: "covers" | "audio") => {
     try {
-      // 1. Get presigned URL
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          contentType: file.type,
-          folder,
-        }),
-      });
-      const { uploadUrl, publicUrl, key } = await res.json();
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", folder);
 
-      // 2. Upload to Cloudflare R2
-      await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
+      const result = await uploadStoryMedia(formData);
 
-      return { publicUrl, key };
+      if (!result.success || !result.publicUrl || !result.key) {
+        throw new Error(result.error || "Failed to upload file");
+      }
+
+      return { publicUrl: result.publicUrl, key: result.key };
     } catch (error) {
-      console.error(`Error uploading ${folder}:`, error);
+      console.error("Upload error:", error);
       throw error;
     }
-  }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      // Stub: in a real implementation we would:
       // 1. Upload cover and audio via `handleFileUpload`
-      // 2. Save the metadata responses into `MediaAsset` records via an API
-      // 3. Attach those `MediaAsset` IDs to this payload
+      let coverMedia = null;
+      if (coverFile) {
+        const result = await handleFileUpload(coverFile, "covers");
+        coverMedia = {
+          url: result.publicUrl,
+          key: result.key,
+          mimeType: coverFile.type,
+          sizeBytes: coverFile.size,
+        };
+      }
 
-      const response = await fetch("/api/admin/stories", {
-        method: "POST",
+      let audioMedia = null;
+      if (audioFile) {
+        const result = await handleFileUpload(audioFile, "audio");
+        audioMedia = {
+          url: result.publicUrl,
+          key: result.key,
+          mimeType: audioFile.type,
+          sizeBytes: audioFile.size,
+        };
+      }
+
+      const payload = {
+        ...values,
+        coverMedia,
+        audioMedia,
+      };
+
+      const url =
+        isEditing && storyId
+          ? `/api/admin/stories/${storyId}`
+          : "/api/admin/stories";
+      const method = isEditing ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Failed to save story");
+      if (!response.ok)
+        throw new Error(`Failed to ${isEditing ? "update" : "save"} story`);
 
       router.push("/admin/stories");
       router.refresh();
@@ -396,20 +429,24 @@ export function StoryEditorForm() {
                 </div>
               </CardContent>
             </Card>
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-border">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push("/admin/stories")}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading
+                  ? "Saving..."
+                  : isEditing
+                    ? "Save Changes"
+                    : "Create Story"}
+              </Button>
+            </div>
           </div>
-        </div>
-
-        <div className="flex justify-end gap-4 border-t pt-6">
-          <Button variant="outline" type="button" onClick={() => router.back()}>
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            disabled={loading}
-            className="font-bold shadow-md"
-          >
-            {loading ? "Saving..." : "Save Story"}
-          </Button>
         </div>
       </form>
     </Form>

@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       ageRangeMax,
       coverImageId,
       audioId,
-      contentBlocks,
+      body: storyBody,
     } = body;
 
     // Basic validation
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
         slug: finalSlug,
         status: status || StoryStatus.DRAFT,
         shortDescription: description || "",
-        body: contentBlocks ? JSON.stringify(contentBlocks) : "",
+        body: storyBody || "",
         isFeatured: isFeatured || false,
         ageRangeMin,
         ageRangeMax,
@@ -129,7 +129,21 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.json({
-      items: stories,
+      items: stories.map((s: any) => ({
+        ...s,
+        ...(s.coverImage && {
+          coverImage: {
+            ...s.coverImage,
+            sizeBytes: s.coverImage.sizeBytes?.toString() || null,
+          },
+        }),
+        ...(s.audio && {
+          audio: {
+            ...s.audio,
+            sizeBytes: s.audio.sizeBytes?.toString() || null,
+          },
+        }),
+      })),
       pagination: {
         page,
         pageSize,

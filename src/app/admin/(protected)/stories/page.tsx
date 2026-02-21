@@ -37,6 +37,24 @@ export default function AdminStories() {
     fetchStories();
   }, []);
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this story?")) return;
+
+    try {
+      const res = await fetch(`/api/admin/stories/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setStories(stories.filter((s) => s.id !== id));
+      } else {
+        alert("Failed to delete story.");
+      }
+    } catch (e) {
+      console.error("Failed to delete story", e);
+      alert("An error occurred while deleting.");
+    }
+  };
+
   const statusStyles: Record<string, string> = {
     PUBLISHED: "bg-[#eef5f1] text-[#3d7a5a]",
     DRAFT: "bg-[#fef6e8] text-[#9a7b3c]",
@@ -143,10 +161,16 @@ export default function AdminStories() {
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <button className="p-1.5 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-md transition-colors">
+                      <Link
+                        href={`/admin/stories/${story.id}/edit`}
+                        className="p-1.5 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-md transition-colors"
+                      >
                         <Pencil className="h-3.5 w-3.5" />
-                      </button>
-                      <button className="p-1.5 text-[#b0ada8] hover:text-[#dc4a3f] hover:bg-[#fef0ef] rounded-md transition-colors">
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(story.id)}
+                        className="p-1.5 text-[#b0ada8] hover:text-[#dc4a3f] hover:bg-[#fef0ef] rounded-md transition-colors"
+                      >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>

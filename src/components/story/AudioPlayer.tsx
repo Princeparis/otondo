@@ -153,37 +153,43 @@ export function AudioPlayer({
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-10 w-full mb-4">
-          <button
-            onClick={toggleMute}
-            disabled={!isThisTrackPlaying}
-            className="p-3 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors disabled:opacity-50"
-          >
-            {isMuted && isThisTrackPlaying ? (
-              <VolumeX size={24} />
+        <div className="grid grid-cols-3 items-center w-full mb-4">
+          <div className="flex justify-end pr-4 sm:pr-8">
+            <button
+              onClick={toggleMute}
+              disabled={!isThisTrackPlaying}
+              className="p-3 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors disabled:opacity-50"
+            >
+              {isMuted && isThisTrackPlaying ? (
+                <VolumeX size={24} />
+              ) : (
+                <Volume2 size={24} />
+              )}
+            </button>
+          </div>
+
+          <div className="flex justify-center">
+            <button
+              ref={playBtnContainer}
+              onClick={handlePlayClick}
+              className="relative h-[80px] w-[80px] bg-[#1a1a1a] text-[#fafaf8] rounded-full flex items-center justify-center shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] hover:scale-105 transition-transform shrink-0"
+            >
+              <div className="absolute inset-0 flex items-center justify-center play-icon">
+                <Play size={36} className="fill-current ml-1" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center pause-icon opacity-0 scale-50">
+                <Pause size={36} className="fill-current" />
+              </div>
+            </button>
+          </div>
+
+          <div className="flex justify-start pl-4 sm:pl-8">
+            {readStoryButton ? (
+              readStoryButton
             ) : (
-              <Volume2 size={24} />
+              <div className="w-[48px]">{/* Spacer */}</div>
             )}
-          </button>
-
-          <button
-            ref={playBtnContainer}
-            onClick={handlePlayClick}
-            className="relative h-[80px] w-[80px] bg-[#1a1a1a] text-[#fafaf8] rounded-full flex items-center justify-center shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] hover:scale-105 transition-transform shrink-0"
-          >
-            <div className="absolute inset-0 flex items-center justify-center play-icon">
-              <Play size={36} className="fill-current ml-1.5" />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center pause-icon opacity-0 scale-50">
-              <Pause size={36} className="fill-current" />
-            </div>
-          </button>
-
-          {readStoryButton ? (
-            readStoryButton
-          ) : (
-            <div className="w-[48px]">{/* Spacer */}</div>
-          )}
+          </div>
         </div>
       </div>
     </div>

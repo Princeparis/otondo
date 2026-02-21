@@ -76,3 +76,35 @@ export async function uploadAvatarBuffer({
     publicUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${uniqueKey}`,
   };
 }
+
+/**
+ * Uploads a Buffer directly to Cloudflare R2 from the server (Generic).
+ */
+export async function uploadBufferToR2({
+  buffer,
+  contentType,
+  fileName,
+  folder,
+}: {
+  buffer: Buffer;
+  contentType: string;
+  fileName: string;
+  folder: "covers" | "audio";
+}) {
+  const extension = fileName.split(".").pop();
+  const uniqueKey = `${folder}/${uuidv4()}.${extension}`;
+
+  const command = new PutObjectCommand({
+    Bucket: R2_BUCKET_NAME,
+    Key: uniqueKey,
+    ContentType: contentType,
+    Body: buffer,
+  });
+
+  await s3Client.send(command);
+
+  return {
+    key: uniqueKey,
+    publicUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${uniqueKey}`,
+  };
+}

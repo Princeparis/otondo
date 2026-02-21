@@ -112,10 +112,10 @@ export function StoryListClient({
 
               {/* Text Content Below Cover */}
               <div className="flex flex-col px-1">
-                <h3 className="text-lg font-bold text-[#1a1a1a] leading-tight mb-1 group-hover:text-[#78756f] transition-colors line-clamp-2">
+                <h3 className="text-base md:text-lg font-bold text-[#1a1a1a] leading-tight mb-1 group-hover:text-[#78756f] transition-colors line-clamp-2">
                   {s.title}
                 </h3>
-                <span className="text-xs font-semibold text-[#78756f]">
+                <span className="text-xs md:text-sm font-semibold text-[#78756f]">
                   Ages {s.ageRangeMin}-{s.ageRangeMax}
                 </span>
               </div>

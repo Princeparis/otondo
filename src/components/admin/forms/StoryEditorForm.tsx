@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -47,6 +47,8 @@ export function StoryEditorForm() {
   const [loading, setLoading] = useState(false);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/categories")
@@ -200,13 +202,22 @@ export function StoryEditorForm() {
                 {/* Cover Image Upload Stub */}
                 <div>
                   <FormLabel className="mb-2 block">Cover Image</FormLabel>
-                  <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer">
+                  <div
+                    className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer"
+                    onClick={() => coverInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setCoverFile(e.dataTransfer.files?.[0] || null);
+                    }}
+                  >
                     <UploadCloud className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground font-medium">
                       Click or drag image to upload
                     </p>
                     <input
                       type="file"
+                      ref={coverInputRef}
                       className="hidden"
                       accept="image/*"
                       onChange={(e) =>
@@ -226,13 +237,22 @@ export function StoryEditorForm() {
                   <FormLabel className="mb-2 block">
                     Narration Audio (MP3/WAV)
                   </FormLabel>
-                  <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer">
+                  <div
+                    className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer"
+                    onClick={() => audioInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setAudioFile(e.dataTransfer.files?.[0] || null);
+                    }}
+                  >
                     <UploadCloud className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground font-medium">
                       Click or drag audio file to upload
                     </p>
                     <input
                       type="file"
+                      ref={audioInputRef}
                       className="hidden"
                       accept="audio/*"
                       onChange={(e) =>

@@ -11,6 +11,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+function generateAvatarColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash % 360);
+  return {
+    bg: `hsl(${hue}, 70%, 90%)`,
+    text: `hsl(${hue}, 70%, 20%)`,
+  };
+}
 
 interface User {
   id: string;
@@ -18,6 +31,7 @@ interface User {
   email: string;
   isActive: boolean;
   createdAt: string;
+  avatarUrl?: string | null;
 }
 
 export default function AdminUsers() {
@@ -224,53 +238,81 @@ export default function AdminUsers() {
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-[#fafaf8] transition-colors"
-                >
-                  <td className="px-5 py-4 font-semibold text-[#1a1a1a] text-sm">
-                    {user.name}
-                  </td>
-                  <td className="px-5 py-4 text-[13px] text-[#78756f]">
-                    {user.email}
-                  </td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={`font-[family-name:var(--font-mono)] text-[11px] font-semibold py-1 px-2 rounded-md inline-block ${
-                        user.isActive
-                          ? "bg-[#eaf5ef] text-[#2e8555]"
-                          : "bg-[#fef0ef] text-[#dc4a3f]"
-                      }`}
-                    >
-                      {user.isActive ? "ACTIVE" : "INACTIVE"}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-[13px] text-[#b0ada8]">
-                    {new Date(user.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() => openEditDialog(user)}
-                        className="p-1.5 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-md transition-colors"
+              users.map((user) => {
+                const avatarColors = generateAvatarColor(user.name || "User");
+                const initials = (user.name || "User")
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .substring(0, 2)
+                  .toUpperCase();
+
+                return (
+                  <tr
+                    key={user.id}
+                    className="hover:bg-[#fafaf8] transition-colors"
+                  >
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          {user.avatarUrl && (
+                            <AvatarImage src={user.avatarUrl} alt={user.name} />
+                          )}
+                          <AvatarFallback
+                            style={{
+                              backgroundColor: avatarColors.bg,
+                              color: avatarColors.text,
+                            }}
+                            className="text-[11px] font-bold"
+                          >
+                            {initials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-semibold text-[#1a1a1a] text-sm">
+                          {user.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-[13px] text-[#78756f]">
+                      {user.email}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span
+                        className={`font-[family-name:var(--font-mono)] text-[11px] font-semibold py-1 px-2 rounded-md inline-block ${
+                          user.isActive
+                            ? "bg-[#eaf5ef] text-[#2e8555]"
+                            : "bg-[#fef0ef] text-[#dc4a3f]"
+                        }`}
                       >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteDialog(user)}
-                        className="p-1.5 text-[#b0ada8] hover:text-[#dc4a3f] hover:bg-[#fef0ef] rounded-md transition-colors"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                        {user.isActive ? "ACTIVE" : "INACTIVE"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-[13px] text-[#b0ada8]">
+                      {new Date(user.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => openEditDialog(user)}
+                          className="p-1.5 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-md transition-colors"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteDialog(user)}
+                          className="p-1.5 text-[#b0ada8] hover:text-[#dc4a3f] hover:bg-[#fef0ef] rounded-md transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

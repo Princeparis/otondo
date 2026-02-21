@@ -20,6 +20,18 @@ interface UserAccountDropdownProps {
   };
 }
 
+function generateAvatarColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash % 360);
+  return {
+    bg: `hsl(${hue}, 70%, 90%)`,
+    text: `hsl(${hue}, 70%, 20%)`,
+  };
+}
+
 export function UserAccountDropdown({ user }: UserAccountDropdownProps) {
   // Create initials from the name (e.g., "John Doe" -> "JD")
   const initials = user.name
@@ -31,6 +43,8 @@ export function UserAccountDropdown({ user }: UserAccountDropdownProps) {
         .toUpperCase()
     : "U";
 
+  const avatarColors = generateAvatarColor(user.name || "User");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
@@ -38,7 +52,13 @@ export function UserAccountDropdown({ user }: UserAccountDropdownProps) {
           {user.avatarUrl && (
             <AvatarImage src={user.avatarUrl} alt={user.name} />
           )}
-          <AvatarFallback className="bg-[#f0eeeb] text-[#1a1a1a] font-bold text-sm">
+          <AvatarFallback
+            style={{
+              backgroundColor: avatarColors.bg,
+              color: avatarColors.text,
+            }}
+            className="font-bold text-sm"
+          >
             {initials}
           </AvatarFallback>
         </Avatar>

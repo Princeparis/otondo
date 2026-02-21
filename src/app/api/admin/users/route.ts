@@ -21,6 +21,7 @@ export async function GET() {
         email: true,
         isActive: true,
         createdAt: true,
+        avatarUrl: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -118,6 +119,7 @@ export async function POST(req: NextRequest) {
         email: true,
         isActive: true,
         createdAt: true,
+        avatarUrl: true,
       },
     });
 

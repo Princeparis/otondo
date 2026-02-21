@@ -5,8 +5,12 @@ export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const categoryId = searchParams.get("category") || undefined;
+    const search = searchParams.get("search") || undefined;
     const ageMin = searchParams.has("ageMin")
       ? parseInt(searchParams.get("ageMin") as string)
+      : undefined;
+    const ageMax = searchParams.has("ageMax")
+      ? parseInt(searchParams.get("ageMax") as string)
       : undefined;
     const page = searchParams.has("page")
       ? parseInt(searchParams.get("page") as string)
@@ -15,7 +19,14 @@ export async function GET(req: NextRequest) {
       ? parseInt(searchParams.get("pageSize") as string)
       : 10;
 
-    const data = await getPublicStories({ categoryId, ageMin, page, pageSize });
+    const data = await getPublicStories({
+      categoryId,
+      searchQuery: search,
+      ageMin,
+      ageMax,
+      page,
+      pageSize,
+    });
 
     return NextResponse.json(data);
   } catch (error) {

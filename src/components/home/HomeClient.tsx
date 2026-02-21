@@ -181,7 +181,7 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
     >
       {/* Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#fafaf8]/80 backdrop-blur-xl border-b border-[#e6e4e0]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 md:px-6">
           <Link
             href="/"
             className="text-xl font-black tracking-tight text-[#1a1a1a]"
@@ -217,15 +217,15 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
         </div>
       </header>
 
-      <main className="flex-1 pt-16 overflow-hidden">
+      <main className="flex-1 pt-6 md:pt-10 overflow-hidden">
         {/* Massive Typography Hero */}
-        <section className="relative px-6 pt-32 pb-20 md:pt-40 md:pb-32 max-w-7xl mx-auto">
+        <section className="relative px-4 pt-32 pb-20 md:px-6 md:pt-40 md:pb-32 max-w-7xl mx-auto">
           <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 bg-[#f0eeeb] text-[#1a1a1a] rounded-full text-xs font-bold tracking-widest uppercase mb-8">
             <Sparkles className="h-4 w-4 text-[#c4a46d]" />
             Boundless Imagination Awaits
           </div>
 
-          <h1 className="text-[3.5rem] md:text-[6rem] lg:text-[7.5rem] leading-[0.95] font-black text-[#1a1a1a] tracking-tight mb-8">
+          <h1 className="text-[3.5rem] md:text-[6rem] lg:text-[7.5rem] leading-[0.95] font-black sm:font-bold text-[#1a1a1a] tracking-tight mb-8">
             <div className="overflow-hidden pb-4">
               <div className="reveal-text block origin-top-left">
                 Fuel their boundless
@@ -269,7 +269,7 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
 
             <Link
               href="/stories"
-              className="hero-btn group relative inline-flex items-center justify-center gap-3 px-8 py-5 text-lg font-bold text-white bg-[#1a1a1a] rounded-full overflow-hidden transition-transform hover:scale-105 active:scale-95 shadow-xl"
+              className="hero-btn group relative inline-flex items-center justify-center gap-3 px-8 py-5 text-lg font-bold text-white bg-[#1a1a1a] rounded-full overflow-hidden transition-transform hover:scale-105 active:scale-95 shadow-xl w-full md:w-72"
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
               Start Reading Now
@@ -283,17 +283,17 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
           <section className="py-10 border-y border-[#e6e4e0] bg-[#fdfdfc] overflow-hidden -mx-4 md:mx-0">
             <div className="marquee-wrapper w-full flex whitespace-nowrap overflow-hidden relative py-10">
               {/* Fade masks for edges */}
-              <div className="absolute top-0 left-0 bottom-0 w-32 bg-linear-to-r from-[#fdfdfc] to-transparent z-10" />
-              <div className="absolute top-0 right-0 bottom-0 w-32 bg-linear-to-l from-[#fdfdfc] to-transparent z-10" />
+              {/* <div className="absolute top-0 left-0 bottom-0 w-32 bg-linear-to-r from-[#fdfdfc] to-transparent z-10" />
+              <div className="absolute top-0 right-0 bottom-0 w-32 bg-linear-to-l from-[#fdfdfc] to-transparent z-10" /> */}
 
-              <div className="marquee-track flex gap-6 md:gap-10 lg:gap-14 items-center w-fit px-6">
+              <div className="marquee-track flex gap-6 sm:gap-4 md:gap-10 lg:gap-14 items-center w-fit px-6">
                 {marqueeItems.map((story, i) => {
                   const colors = generateSettingsColor(story.title);
                   return (
                     <Link
                       href={`/stories/${story.slug}`}
                       key={`${story.id}-${i}`}
-                      className="shrink-0 block group overflow-hidden rounded-[2.5rem] shadow-sm border border-[#e6e4e0] transition-transform hover:-translate-y-4 relative aspect-4/5"
+                      className="shrink-0 block group overflow-hidden rounded-[1rem] md:rounded-[2.5rem] shadow-sm border border-[#e6e4e0] transition-transform hover:-translate-y-4 relative aspect-4/5"
                       style={{ width: "clamp(280px, 35vw, 600px)" }}
                     >
                       {story.coverImage ? (
@@ -308,7 +308,7 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
                         </div>
                       ) : (
                         <div
-                          className="w-full h-full relative flex flex-col justify-between p-8 md:p-12 overflow-hidden"
+                          className="w-full h-full relative flex flex-col justify-between p-4 md:p-12 overflow-hidden"
                           style={{ backgroundColor: colors.bg }}
                         >
                           <BookOpen
@@ -317,13 +317,13 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
                           />
                           <div className="group-hover:scale-110 transition-transform duration-700 origin-bottom-left">
                             <h3
-                              className="font-black text-2xl md:text-4xl lg:text-5xl leading-tight mb-4 whitespace-normal line-clamp-4"
+                              className="font-bold text-xl md:text-4xl lg:text-5xl leading-tight mb-4 whitespace-normal line-clamp-4"
                               style={{ color: colors.text }}
                             >
                               {story.title}
                             </h3>
                             <span
-                              className="text-sm md:text-base font-bold px-4 py-2 bg-white/30 rounded-full inline-block backdrop-blur-sm"
+                              className="text-sm md:text-base font-medium px-4 py-2 bg-white/30 rounded-full inline-block backdrop-blur-sm"
                               style={{ color: colors.text }}
                             >
                               Ages {story.ageRangeMin}-{story.ageRangeMax}
@@ -340,15 +340,15 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
         )}
 
         {/* Bento Box Layout */}
-        <section className="px-6 py-24 pb-40 max-w-7xl mx-auto">
+        <section className="px-4 py-24 pb-40 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 auto-rows-[380px] md:auto-rows-[450px] gap-6">
             {/* Bento 1: Large Reading Immersive */}
-            <div className="bento-card col-span-1 md:col-span-8 bg-linear-to-br from-[#f0fce8] to-[#e6f4dc] rounded-[2.5rem] overflow-hidden relative group p-10 md:p-14 border border-[#e2e8db]">
+            <div className="bento-card col-span-1 md:col-span-8 bg-linear-to-br from-[#f0fce8] to-[#e6f4dc] rounded-[1rem] md:rounded-[2.5rem] overflow-hidden relative group p-4 md:p-14 border border-[#e2e8db]">
               <div className="relative z-10 max-w-md">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-md rounded-full text-xs font-bold text-[#3d5a2d] uppercase tracking-widest mb-6 border border-white">
                   <BookOpen className="h-4 w-4" /> Focus Mode
                 </div>
-                <h3 className="text-4xl md:text-5xl font-black text-[#2c4021] leading-tight mb-4 group-hover:-translate-y-2 transition-transform duration-500">
+                <h3 className="text-2xl md:text-5xl font-black text-[#2c4021] leading-tight mb-32 md:mb-8 group-hover:-translate-y-2 transition-transform duration-500">
                   Read together.
                   <br />
                   Unforgettable bonding.
@@ -371,9 +371,9 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
             </div>
 
             {/* Bento 2: Audio Player */}
-            <div className="bento-card col-span-1 md:col-span-4 bg-linear-to-tr from-[#eef5ff] to-[#ddeaff] rounded-[2.5rem] overflow-hidden relative group p-10 flex flex-col justify-end border border-[#d6e5fa]">
+            <div className="bento-card col-span-1 md:col-span-4 bg-linear-to-tr from-[#eef5ff] to-[#ddeaff] rounded-[1rem] md:rounded-[2.5rem] overflow-hidden relative group p-4 md:p-10 flex flex-col justify-end border border-[#d6e5fa]">
               <div className="relative z-10">
-                <h3 className="text-3xl font-black text-[#264166] leading-tight mb-2">
+                <h3 className="text-2xl md:text-3xl font-black text-[#264166] leading-tight mb-2">
                   Cinematic audio playback.
                 </h3>
                 <p className="text-[#5474a1] font-medium">
@@ -396,12 +396,12 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
             </div>
 
             {/* Bento 3: Curated Safety */}
-            <div className="bento-card col-span-1 md:col-span-4 bg-linear-to-b from-[#fef6e8] to-[#fcecd2] rounded-[2.5rem] overflow-hidden relative group p-10 border border-[#fae2c0] flex flex-col">
+            <div className="bento-card col-span-1 md:col-span-4 bg-linear-to-b from-[#fef6e8] to-[#fcecd2] rounded-[1rem] md:rounded-[2.5rem] overflow-hidden relative group p-4 md:p-10 border border-[#fae2c0] flex flex-col">
               <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-auto group-hover:rotate-15 group-hover:scale-110 transition-transform duration-500">
                 <Sparkles className="h-8 w-8 text-[#c4a46d]" />
               </div>
               <div className="mt-8">
-                <h3 className="text-3xl font-black text-[#5c4a2d] leading-tight mb-2">
+                <h3 className="text-2xl md:text-3xl font-black text-[#5c4a2d] leading-tight mb-2">
                   A safe haven for little minds.
                 </h3>
                 <p className="text-[#8c744c] font-medium">
@@ -412,12 +412,12 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
             </div>
 
             {/* Bento 4: Interactive Character Card */}
-            <div className="bento-card col-span-1 md:col-span-8 bg-[#1a1a1a] rounded-[2.5rem] overflow-hidden relative group p-10 md:p-14 flex items-center border border-[#333]">
+            <div className="bento-card col-span-1 md:col-span-8 bg-[#1a1a1a] rounded-[1rem] md:rounded-[2.5rem] overflow-hidden relative group p-4 md:p-14 flex items-center border border-[#333]">
               <div className="relative z-10 max-w-sm">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#333] rounded-full text-xs font-bold text-white uppercase tracking-widest mb-6 border border-[#444]">
                   New Releases
                 </div>
-                <h3 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+                <h3 className="text-2xl md:text-5xl font-black text-white leading-tight mb-6">
                   New worlds, every single week.
                 </h3>
 
@@ -443,7 +443,7 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
         {/* Minimal CTA Bottom */}
         <section className="py-24 px-6 border-t border-[#e6e4e0] bg-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] tracking-tight mb-8">
+            <h2 className="text-2xl md:text-5xl font-black text-[#1a1a1a] tracking-tight mb-8">
               Ready for unforgettable storytime?
             </h2>
             <Link

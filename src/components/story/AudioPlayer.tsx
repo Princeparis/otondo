@@ -129,7 +129,7 @@ export function AudioPlayer({
       </div>
 
       {/* Controls Container */}
-      <div className="flex-none p-8 lg:p-10 flex flex-col items-center bg-[#fafaf8] relative z-10 rounded-t-[2.5rem] -mt-10 lg:-mt-12 shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)] pb-32 lg:pb-12">
+      <div className="flex-none p-8 lg:p-10 flex flex-col items-center bg-[#fafaf8] relative z-10 rounded-t-[2.5rem] -mt-10 lg:-mt-12 shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)] pb-8 lg:pb-12">
         <p className="text-xs font-bold text-[#b0ada8] mb-2 tracking-widest uppercase">
           Playing Now
         </p>

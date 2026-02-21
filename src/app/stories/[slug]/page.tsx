@@ -13,17 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-// Note: In a real app we would call the Service directly since this is an RSC
-// import { getStoryBySlug } from "@/lib/services/storyService";
-
-// Mock fetching function for UI building demonstration
-async function getStoryContent(slug: string) {
-  const res = await fetch(`http://localhost:3000/api/stories/${slug}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-  return res.json();
-}
+import { getStoryBySlug } from "@/lib/services/storyService";
 
 export default async function StoryDetailPage({
   params,
@@ -38,40 +28,17 @@ export default async function StoryDetailPage({
 
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
-  // const story = await getStoryBySlug(slug);
-
-  // Using mock data fallback if DB isn't seeded to show UI construction
-  const story = {
-    title: "The Great Adventure of Timmy",
-    category: { name: "Adventure" },
-    ageRangeMin: 4,
-    ageRangeMax: 8,
-    audio: {
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    },
-    coverImage: null as { url: string } | null,
-    contentBlocks: [
-      {
-        type: "paragraph",
-        content:
-          "Once upon a time in a vibrant, sprawling forest, lived a little fox named Timmy. Timmy possessed a curiously fluffy tail and eyes that sparkled with the promise of endless mischief.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "Every morning, while the dew was still resting on the broad leaves of the oak trees, Timmy would bound out of his cozy den. He wasn't like the other foxes who preferred to nap in the sun. No, Timmy was an explorer.",
-      },
-      {
-        type: "paragraph",
-        content:
-          "One particularly sunny Tuesday, Timmy discovered something unusual by the edge of the Whispering Creek. It was a smooth, round stone that shimmered with an iridescent blue light. When he tapped it with his paw, it let out a soft, musical chime that echoed through the trees.",
-      },
-    ],
-  }; // Replace with real fetch
+  const story = await getStoryBySlug(slug);
 
   if (!story) {
     notFound();
   }
+
+  // Split plain text body into paragraphs
+  const paragraphs = story.body
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
 
   return (
     <div className="relative min-h-dvh w-full bg-[#fafaf8] font-(family-name:--font-outfit) overflow-hidden flex">
@@ -116,8 +83,8 @@ export default async function StoryDetailPage({
             </div>
 
             <div className="prose prose-lg md:prose-xl prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed prose-p:mb-8 max-w-none">
-              {story.contentBlocks.map((block: any, idx: number) => (
-                <p key={idx}>{block.content}</p>
+              {paragraphs.map((content: string, idx: number) => (
+                <p key={idx}>{content}</p>
               ))}
             </div>
 
@@ -181,16 +148,19 @@ export default async function StoryDetailPage({
                 </SheetDescription>
               </SheetHeader>
               <div className="p-6 prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
-                {story.contentBlocks.map((block: any, idx: number) => (
-                  <p key={idx}>{block.content}</p>
+                {paragraphs.map((content: string, idx: number) => (
+                  <p key={idx}>{content}</p>
                 ))}
               </div>
             </SheetContent>
           </Sheet>
         ) : (
           <div className="flex-1 bg-[#f0eeeb] flex flex-col items-center justify-center p-8 text-center gap-6">
-            <p className="text-sm font-semibold text-[#78756f]">
-              Audio version not available.
+            <div className="w-16 h-16 bg-[#e6e4e0] rounded-2xl flex items-center justify-center mb-2 shadow-sm">
+              <BookOpen className="h-8 w-8 text-[#1a1a1a]" />
+            </div>
+            <p className="text-base font-bold text-[#1a1a1a] max-w-[250px]">
+              This story is meant to be read, not heard just yet.
             </p>
             <div className="lg:hidden">
               <Sheet>
@@ -213,8 +183,8 @@ export default async function StoryDetailPage({
                     </SheetDescription>
                   </SheetHeader>
                   <div className="p-6 prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
-                    {story.contentBlocks.map((block: any, idx: number) => (
-                      <p key={idx}>{block.content}</p>
+                    {paragraphs.map((content: string, idx: number) => (
+                      <p key={idx}>{content}</p>
                     ))}
                   </div>
                 </SheetContent>

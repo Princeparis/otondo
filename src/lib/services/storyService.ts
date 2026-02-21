@@ -3,12 +3,14 @@ import { StoryStatus } from "@prisma/client";
 
 export const getPublicStories = async ({
   categoryId,
+  searchQuery,
   ageMin,
   ageMax,
   page = 1,
   pageSize = 10,
 }: {
   categoryId?: string;
+  searchQuery?: string;
   ageMin?: number;
   ageMax?: number;
   page?: number;
@@ -24,6 +26,13 @@ export const getPublicStories = async ({
 
   if (categoryId) {
     where.categoryId = categoryId;
+  }
+
+  if (searchQuery) {
+    where.OR = [
+      { title: { contains: searchQuery, mode: "insensitive" } },
+      { category: { name: { contains: searchQuery, mode: "insensitive" } } },
+    ];
   }
 
   if (ageMin !== undefined) {

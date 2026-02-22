@@ -27,7 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UploadCloud } from "lucide-react";
-import { uploadStoryMedia } from "@/app/admin/(protected)/stories/actions";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters."),
@@ -73,7 +72,7 @@ export function StoryEditorForm({
     defaultValues: {
       title: initialData?.title || "",
       description: initialData?.shortDescription || "",
-      body: initialData?.body ? JSON.parse(initialData.body) : "",
+      body: initialData?.body || "",
       categoryId: initialData?.categoryId || "",
       isFeatured: initialData?.isFeatured || false,
       ageRangeMin: initialData?.ageRangeMin || 3,
@@ -88,10 +87,15 @@ export function StoryEditorForm({
       formData.append("file", file);
       formData.append("folder", folder);
 
-      const result = await uploadStoryMedia(formData);
+      const response = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      if (!result.success || !result.publicUrl || !result.key) {
-        throw new Error(result.error || "Failed to upload file");
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || "Failed to upload file");
       }
 
       return { publicUrl: result.publicUrl, key: result.key };

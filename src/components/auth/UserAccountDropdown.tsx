@@ -94,10 +94,10 @@ export function UserAccountDropdown({ user }: UserAccountDropdownProps) {
           asChild
           className="cursor-pointer text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600 hover:text-red-600"
         >
-          <Link href="/api/auth/logout" className="w-full flex items-center">
+          <a href="/api/auth/logout" className="w-full flex items-center">
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sign out</span>
-          </Link>
+          </a>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

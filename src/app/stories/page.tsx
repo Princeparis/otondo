@@ -48,7 +48,10 @@ export default async function StoriesIndex(props: Props) {
         </div>
       </header>
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-6 py-10 md:py-24">
+      <main
+        data-lenis-prevent="true"
+        className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-6 py-10 md:py-24"
+      >
         <div className="mb-8 md:mb-12 max-w-2xl">
           <h1 className="text-2xl md:text-5xl lg:text-6xl font-black text-[#1a1a1a] tracking-tight mb-2 md:mb-4">
             Library

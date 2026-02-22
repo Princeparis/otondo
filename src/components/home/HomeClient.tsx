@@ -71,9 +71,11 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
         ScrollTrigger.update();
       });
 
-      gsap.ticker.add((time) => {
+      const updateLenis = (time: number) => {
         lenis.raf(time * 1000);
-      });
+      };
+
+      gsap.ticker.add(updateLenis);
       gsap.ticker.lagSmoothing(0);
 
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -169,7 +171,10 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
         });
       }
 
-      return () => lenis.destroy();
+      return () => {
+        gsap.ticker.remove(updateLenis);
+        lenis.destroy();
+      };
     },
     { scope: container },
   );

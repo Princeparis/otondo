@@ -281,7 +281,7 @@ export function AdminManagementClient({
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`font-[family-name:var(--font-mono)] text-[11px] font-semibold py-1 px-2 rounded-md inline-block ${
+                        className={`font-mono text-[11px] font-semibold py-1 px-2 rounded-md inline-block ${
                           admin.isActive
                             ? "bg-[#eaf5ef] text-[#2e8555]"
                             : "bg-[#fef0ef] text-[#dc4a3f]"

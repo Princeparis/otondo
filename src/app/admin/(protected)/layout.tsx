@@ -17,7 +17,12 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-[#fafaf8] font-[family-name:var(--font-space-grotesk)]">
-      <AdminSidebar />
+      <AdminSidebar
+        user={{
+          name: user.name || "Admin",
+          role: (user as any).role || "EDITOR",
+        }}
+      />
       <div className="flex-1 flex flex-col min-h-screen">
         <AdminHeader />
         <main className="flex-1 p-6 overflow-y-auto">{children}</main>

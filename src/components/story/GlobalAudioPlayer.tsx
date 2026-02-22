@@ -53,8 +53,8 @@ export function GlobalAudioPlayer() {
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-3xl bg-[#fafaf8] border border-[#e6e4e0] shadow-xl rounded-2xl p-3 flex items-center justify-between z-50 animate-in slide-in-from-bottom-5">
-      {/* Track Info */}
-      <div className="flex items-center gap-3 w-1/3">
+      {/* Track Info (Left) */}
+      <div className="flex items-center gap-3 flex-1 min-w-0 mr-4">
         {currentTrack.coverUrl ? (
           <div className="w-12 h-12 rounded-lg bg-[#f0eeeb] flex-shrink-0 overflow-hidden relative border border-[#e6e4e0]">
             <Image
@@ -84,20 +84,8 @@ export function GlobalAudioPlayer() {
         </div>
       </div>
 
-      {/* Controls & Progress */}
-      <div className="flex-1 flex flex-col items-center px-4">
-        <div className="flex items-center gap-4 mb-1">
-          <button
-            onClick={togglePlay}
-            className="w-10 h-10 rounded-full bg-[#1a1a1a] text-[#fafaf8] flex items-center justify-center hover:scale-105 transition-transform"
-          >
-            {isPlaying ? (
-              <Pause className="w-5 h-5 fill-current" />
-            ) : (
-              <Play className="w-5 h-5 fill-current ml-0.5" />
-            )}
-          </button>
-        </div>
+      {/* Progress (Center Desktop Only) */}
+      <div className="hidden md:flex flex-1 flex-col items-center px-4">
         <div className="w-full flex items-center gap-2">
           <span className="text-[10px] font-bold text-[#78756f] w-8 text-right tabular-nums">
             {formatTime(progress)}
@@ -116,8 +104,8 @@ export function GlobalAudioPlayer() {
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center justify-end gap-2 w-1/3">
+      {/* Actions (Right) */}
+      <div className="flex items-center justify-end gap-1 md:gap-2 shrink-0">
         <button
           onClick={toggleMute}
           className="p-2 text-[#78756f] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors"
@@ -128,11 +116,23 @@ export function GlobalAudioPlayer() {
             <Volume2 className="w-4 h-4" />
           )}
         </button>
+
+        <button
+          onClick={togglePlay}
+          className="w-10 h-10 rounded-full bg-[#1a1a1a] text-[#fafaf8] flex items-center justify-center hover:scale-105 transition-transform"
+        >
+          {isPlaying ? (
+            <Pause className="w-5 h-5 fill-current" />
+          ) : (
+            <Play className="w-5 h-5 fill-current ml-0.5" />
+          )}
+        </button>
+
         <button
           onClick={closePlayer}
-          className="p-2 text-[#78756f] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors"
+          className="p-2 pr-1 text-[#78756f] hover:text-[#1a1a1a] transition-colors"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
     </div>

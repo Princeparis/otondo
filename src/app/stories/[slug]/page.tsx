@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { validateUserRequest } from "@/lib/userAuth.server";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 import { getStoryBySlug } from "@/lib/services/storyService";
 
@@ -119,7 +119,7 @@ export default async function StoryDetailPage({
 
         {/* The Audio Player Component (Takes full remaining space) */}
         {story.audio ? (
-          <Sheet>
+          <Drawer snapPoints={[0.5, 0.75, 1]} fadeFromIndex={0}>
             <AudioPlayer
               audioUrl={story.audio.url}
               title={story.title}
@@ -127,33 +127,30 @@ export default async function StoryDetailPage({
               storySlug={slug}
               readStoryButton={
                 <div className="lg:hidden flex items-center justify-center">
-                  <SheetTrigger asChild>
+                  <DrawerTrigger asChild>
                     <button className="p-3 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors disabled:opacity-50">
                       <BookOpen size={24} />
                     </button>
-                  </SheetTrigger>
+                  </DrawerTrigger>
                 </div>
               }
             />
-            <SheetContent
-              side="bottom"
-              className="h-[85dvh] rounded-t-3xl overflow-y-auto p-0 border-t-0 bg-[#fafaf8] flex flex-col font-[family-name:var(--font-outfit)]"
-            >
-              <SheetHeader className="p-6 pb-2 sticky top-0 bg-[#fafaf8]/95 backdrop-blur-md z-10 border-b border-[#e6e4e0] text-left">
-                <SheetTitle className="text-2xl font-black text-[#1a1a1a] leading-tight">
+            <DrawerContent className="h-[85dvh] rounded-t-3xl p-0 border-t-0 bg-[#fafaf8] flex flex-col font-[family-name:var(--font-outfit)]">
+              <DrawerHeader className="p-6 pb-2 sticky top-0 bg-[#fafaf8]/95 backdrop-blur-md z-10 border-b border-[#e6e4e0] text-left">
+                <DrawerTitle className="text-2xl font-black text-[#1a1a1a] leading-tight">
                   {story.title}
-                </SheetTitle>
-                <SheetDescription className="text-[#78756f] mt-1 font-semibold text-sm">
+                </DrawerTitle>
+                <DrawerDescription className="text-[#78756f] mt-1 font-semibold text-sm">
                   Read along with the audio
-                </SheetDescription>
-              </SheetHeader>
-              <div className="p-6 prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-6 overflow-y-auto prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
                 {paragraphs.map((content: string, idx: number) => (
                   <p key={idx}>{content}</p>
                 ))}
               </div>
-            </SheetContent>
-          </Sheet>
+            </DrawerContent>
+          </Drawer>
         ) : (
           <div className="flex-1 bg-[#f0eeeb] flex flex-col items-center justify-center p-8 text-center gap-6">
             <div className="w-16 h-16 bg-[#e6e4e0] rounded-2xl flex items-center justify-center mb-2 shadow-sm">
@@ -163,32 +160,29 @@ export default async function StoryDetailPage({
               This story is meant to be read, not heard just yet.
             </p>
             <div className="lg:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
+              <Drawer snapPoints={[0.5, 0.75, 1]} fadeFromIndex={0}>
+                <DrawerTrigger asChild>
                   <Button className="bg-[#1a1a1a] text-[#fafaf8] hover:bg-[#333] rounded-full px-8 h-12 text-base font-bold flex items-center gap-2">
                     <BookOpen size={20} />
                     Read Story
                   </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="bottom"
-                  className="h-[85dvh] rounded-t-3xl overflow-y-auto p-0 border-t-0 bg-[#fafaf8] flex flex-col font-[family-name:var(--font-outfit)]"
-                >
-                  <SheetHeader className="p-6 pb-2 sticky top-0 bg-[#fafaf8]/95 backdrop-blur-md z-10 border-b border-[#e6e4e0] text-left">
-                    <SheetTitle className="text-2xl font-black text-[#1a1a1a] leading-tight">
+                </DrawerTrigger>
+                <DrawerContent className="h-[85dvh] rounded-t-3xl p-0 border-t-0 bg-[#fafaf8] flex flex-col font-[family-name:var(--font-outfit)]">
+                  <DrawerHeader className="p-6 pb-2 sticky top-0 bg-[#fafaf8]/95 backdrop-blur-md z-10 border-b border-[#e6e4e0] text-left">
+                    <DrawerTitle className="text-2xl font-black text-[#1a1a1a] leading-tight">
                       {story.title}
-                    </SheetTitle>
-                    <SheetDescription className="text-[#78756f] mt-1 font-semibold text-sm">
+                    </DrawerTitle>
+                    <DrawerDescription className="text-[#78756f] mt-1 font-semibold text-sm">
                       Text version
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="p-6 prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
+                    </DrawerDescription>
+                  </DrawerHeader>
+                  <div className="p-6 overflow-y-auto prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
                     {paragraphs.map((content: string, idx: number) => (
                       <p key={idx}>{content}</p>
                     ))}
                   </div>
-                </SheetContent>
-              </Sheet>
+                </DrawerContent>
+              </Drawer>
             </div>
           </div>
         )}

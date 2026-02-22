@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
       isFeatured,
       ageRangeMin,
       ageRangeMax,
-      coverImageId,
-      audioId,
+      coverMedia,
+      audioMedia,
       body: storyBody,
     } = body;
 
@@ -66,6 +66,39 @@ export async function POST(req: NextRequest) {
         where: { slug: finalSlug },
       });
       counter++;
+    }
+
+    // Create MediaAsset records if media was uploaded
+    let coverImageId = undefined;
+    if (coverMedia) {
+      const coverAsset = await prisma.mediaAsset.create({
+        data: {
+          type: "IMAGE",
+          url: coverMedia.url,
+          bucket: process.env.R2_BUCKET_NAME || "storykids",
+          objectKey: coverMedia.key,
+          mimeType: coverMedia.mimeType,
+          sizeBytes: coverMedia.sizeBytes,
+          createdByAdminId: user.id,
+        },
+      });
+      coverImageId = coverAsset.id;
+    }
+
+    let audioId = undefined;
+    if (audioMedia) {
+      const audioAsset = await prisma.mediaAsset.create({
+        data: {
+          type: "AUDIO",
+          url: audioMedia.url,
+          bucket: process.env.R2_BUCKET_NAME || "storykids",
+          objectKey: audioMedia.key,
+          mimeType: audioMedia.mimeType,
+          sizeBytes: audioMedia.sizeBytes,
+          createdByAdminId: user.id,
+        },
+      });
+      audioId = audioAsset.id;
     }
 
     const story = await prisma.story.create({

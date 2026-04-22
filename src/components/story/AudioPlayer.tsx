@@ -81,7 +81,6 @@ export function AudioPlayer({
 
         <div className="mb-6 w-full max-w-sm">
           <SoundWaveSeeker
-            className="h-12"
             value={displayProgress}
             max={displayDuration || 100}
             onChange={handleProgressChange}

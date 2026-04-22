@@ -100,7 +100,7 @@ export function GlobalAudioPlayer() {
             {formatTime(progress)}
           </span>
           <SoundWaveSeeker
-            className="h-11 min-w-0 flex-1"
+            className="h-11 rounded-xl px-2.5 py-2"
             value={progress}
             max={duration || 100}
             onChange={handleProgressChange}

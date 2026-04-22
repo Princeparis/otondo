@@ -162,26 +162,25 @@ html.lenis body {
 .waveform-range-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 34px;
-  height: 14px;
-  border-radius: 9999px;
-  border: 1.5px solid #ffffff;
-  background: linear-gradient(90deg, #8f77ff 0%, #6f5ad9 100%);
+  width: 20px;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(180deg, #8f77ff 0%, #6f5ad9 100%);
   box-shadow: 0 7px 16px -9px rgba(45, 31, 95, 0.85);
-  margin-top: 15px;
+  margin-top: 8px;
 }
 
 .waveform-range-input::-moz-range-thumb {
-  width: 34px;
-  height: 14px;
-  border-radius: 9999px;
-  border: 1.5px solid #ffffff;
-  background: linear-gradient(90deg, #8f77ff 0%, #6f5ad9 100%);
+  width: 20px;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(180deg, #8f77ff 0%, #6f5ad9 100%);
   box-shadow: 0 7px 16px -9px rgba(45, 31, 95, 0.85);
 }
 
 .wave-bar-live {
-  transform-origin: bottom;
   animation: wavePulse 0.95s ease-in-out infinite;
 }
 

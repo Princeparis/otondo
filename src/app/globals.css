@@ -147,3 +147,51 @@ html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+
+.waveform-range-input::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+
+.waveform-range-input::-moz-range-track {
+  height: 100%;
+  background: transparent;
+  border: 0;
+}
+
+.waveform-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(180deg, #8f77ff 0%, #6f5ad9 100%);
+  box-shadow: 0 7px 16px -9px rgba(45, 31, 95, 0.85);
+  margin-top: 8px;
+}
+
+.waveform-range-input::-moz-range-thumb {
+  width: 20px;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(180deg, #8f77ff 0%, #6f5ad9 100%);
+  box-shadow: 0 7px 16px -9px rgba(45, 31, 95, 0.85);
+}
+
+.wave-bar-live {
+  animation: wavePulse 0.95s ease-in-out infinite;
+}
+
+@keyframes wavePulse {
+  0%,
+  100% {
+    transform: scaleY(0.8);
+    filter: saturate(95%);
+  }
+  50% {
+    transform: scaleY(1.16);
+    filter: saturate(120%);
+  }
+}

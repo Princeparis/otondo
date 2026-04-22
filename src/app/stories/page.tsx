@@ -32,7 +32,7 @@ export default async function StoriesIndex(props: Props) {
   });
 
   return (
-    <div className="min-h-screen bg-[#fafaf8] flex flex-col font-[family-name:var(--font-outfit)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#f3efff_0%,_#fafaf8_42%)] flex flex-col font-[family-name:var(--font-outfit)]">
       {/* Sleek Minimal Header */}
       <header className="h-16 border-b border-[#e6e4e0] bg-[#fafaf8]/80 backdrop-blur-xl flex items-center sticky top-0 z-10 w-full">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between px-6">
@@ -52,13 +52,15 @@ export default async function StoriesIndex(props: Props) {
         data-lenis-prevent="true"
         className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-6 py-10 md:py-24"
       >
-        <div className="mb-8 md:mb-12 max-w-2xl">
-          <h1 className="text-2xl md:text-5xl lg:text-6xl font-black text-[#1a1a1a] tracking-tight mb-2 md:mb-4">
-            Library
+        <div className="mb-8 md:mb-12 max-w-3xl">
+          <span className="inline-flex items-center rounded-full border border-[#dfd8ff] bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#6f5ad9] mb-4">
+            Immersive library
+          </span>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#1a1a1a] tracking-tight mb-3 md:mb-4">
+            Pick a story and jump right in
           </h1>
           <p className="text-base md:text-xl text-[#78756f] font-medium leading-relaxed">
-            Explore our curated collection of adventures, bedtime stories, and
-            educational tales.
+            Explore curated adventures, bedtime journeys, and educational tales with smooth search and playful browsing.
           </p>
         </div>
 
@@ -81,7 +83,7 @@ export default async function StoriesIndex(props: Props) {
               No stories found
             </h3>
             <p className="text-lg text-[#78756f] font-medium max-w-md mx-auto">
-              We couldn't find any adventures matching your search. Try
+              We couldn&apos;t find any adventures matching your search. Try
               adjusting your filters or browsing our categories.
             </p>
           </div>

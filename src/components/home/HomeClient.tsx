@@ -310,12 +310,14 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
                   Discover Stories
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link
-                  href="/signup"
-                  className="hero-cta inline-flex items-center justify-center gap-2 px-7 py-4 text-base font-bold text-[#1a1a1a] bg-white rounded-full border border-[#dcdad4] hover:border-[#b7b4ad] transition-all shadow-sm"
-                >
-                  Start free
-                </Link>
+                {!user && (
+                  <Link
+                    href="/signup"
+                    className="hero-cta inline-flex items-center justify-center gap-2 px-7 py-4 text-base font-bold text-[#1a1a1a] bg-white rounded-full border border-[#dcdad4] hover:border-[#b7b4ad] transition-all shadow-sm"
+                  >
+                    Start free
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -484,10 +486,10 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
                 </h3>
 
                 <Link
-                  href="/signup"
+                  href={user ? "/stories" : "/signup"}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-[#1a1a1a] bg-white rounded-full hover:bg-gray-100 transition-colors hover:scale-105 active:scale-95 shadow-xl"
                 >
-                  Explore Library
+                  {user ? "Go to Library" : "Explore Library"}
                 </Link>
               </div>
 
@@ -511,10 +513,10 @@ export default function HomeClient({ user, featuredStories }: HomeClientProps) {
               narrated stories.
             </p>
             <Link
-              href="/signup"
+              href={user ? "/stories" : "/signup"}
               className="inline-flex items-center justify-center gap-2 px-10 py-5 text-xl font-bold text-white bg-[#1a1a1a] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl"
             >
-              Start Reading Free
+              {user ? "Continue Reading" : "Start Reading Free"}
             </Link>
           </div>
         </section>

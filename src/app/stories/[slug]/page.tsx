@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { getStoryBySlug } from "@/lib/services/storyService";
+import { StoryReadAlong } from "@/components/story/StoryReadAlong";
 
 export default async function StoryDetailPage({
   params,
@@ -82,10 +83,8 @@ export default async function StoryDetailPage({
               </h1>
             </div>
 
-            <div className="prose prose-lg md:prose-xl prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed prose-p:mb-8 max-w-none">
-              {paragraphs.map((content: string, idx: number) => (
-                <p key={idx}>{content}</p>
-              ))}
+            <div className="prose prose-lg md:prose-xl prose-p:font-medium prose-p:leading-relaxed prose-p:mb-8 max-w-none">
+              <StoryReadAlong paragraphs={paragraphs} storySlug={slug} />
             </div>
 
             <div className="mt-20 pt-10 border-t border-[#e6e4e0] text-center mb-16">
@@ -144,10 +143,8 @@ export default async function StoryDetailPage({
                   Read along with the audio
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="p-6 overflow-y-auto prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
-                {paragraphs.map((content: string, idx: number) => (
-                  <p key={idx}>{content}</p>
-                ))}
+              <div className="p-6 overflow-y-auto prose prose-lg prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
+                <StoryReadAlong paragraphs={paragraphs} storySlug={slug} />
               </div>
             </DrawerContent>
           </Drawer>
@@ -176,10 +173,8 @@ export default async function StoryDetailPage({
                       Text version
                     </DrawerDescription>
                   </DrawerHeader>
-                  <div className="p-6 overflow-y-auto prose prose-lg prose-p:text-[#1a1a1a]/80 prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
-                    {paragraphs.map((content: string, idx: number) => (
-                      <p key={idx}>{content}</p>
-                    ))}
+                  <div className="p-6 overflow-y-auto prose prose-lg prose-p:font-medium prose-p:leading-relaxed max-w-none pb-24">
+                    <StoryReadAlong paragraphs={paragraphs} storySlug={slug} />
                   </div>
                 </DrawerContent>
               </Drawer>

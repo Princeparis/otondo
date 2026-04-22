@@ -1,11 +1,11 @@
 "use client";
 
 import { useAudio } from "@/contexts/AudioContext";
-import { Play, Pause, X, Volume2, VolumeX } from "lucide-react";
+import { Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
 
 export function GlobalAudioPlayer() {
   const {
@@ -21,22 +21,11 @@ export function GlobalAudioPlayer() {
   } = useAudio();
 
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
+  if (!currentTrack) return null;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  if (["/login", "/signup", "/admin/login"].includes(pathname)) return null;
 
-  // Don't render on server or if no track is loaded
-  if (!mounted || !currentTrack) return null;
-
-  // Hide the global player if we are on the specific story's detail page,
-  // because the LargeAudioPlayer will be visible there.
-  // We assume the URL is /stories/[slug]
-  if (
-    currentTrack.storySlug &&
-    pathname === `/stories/${currentTrack.storySlug}`
-  ) {
+  if (currentTrack.storySlug && pathname === `/stories/${currentTrack.storySlug}`) {
     return null;
   }
 
@@ -52,42 +41,60 @@ export function GlobalAudioPlayer() {
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-3xl bg-[#fafaf8] border border-[#e6e4e0] shadow-xl rounded-2xl p-3 flex items-center justify-between z-50 animate-in slide-in-from-bottom-5">
-      {/* Track Info (Left) */}
-      <div className="flex items-center gap-3 flex-1 min-w-0 mr-4">
-        {currentTrack.coverUrl ? (
-          <div className="w-12 h-12 rounded-lg bg-[#f0eeeb] flex-shrink-0 overflow-hidden relative border border-[#e6e4e0]">
-            <Image
-              src={currentTrack.coverUrl}
-              alt={currentTrack.title}
-              fill
-              className="object-cover"
-            />
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-1.25rem)] max-w-4xl z-50 animate-in slide-in-from-bottom-5 duration-500">
+      <div className="rounded-3xl border border-[#dfd8ff] bg-white/95 backdrop-blur-xl shadow-[0_22px_60px_-30px_rgba(68,44,150,0.65)] p-3 md:p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            {currentTrack.coverUrl ? (
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-[#f0eeeb] overflow-hidden relative border border-[#ece8df] shrink-0">
+                <Image src={currentTrack.coverUrl} alt={currentTrack.title} fill className="object-cover" />
+              </div>
+            ) : (
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-[#f3f0ff] text-[#6f5ad9] border border-[#dfd8ff] flex items-center justify-center text-xl font-black shrink-0">
+                {currentTrack.title.charAt(0)}
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="text-sm md:text-base font-black text-[#1a1a1a] truncate">{currentTrack.title}</p>
+              {currentTrack.storySlug && (
+                <Link
+                  href={`/stories/${currentTrack.storySlug}`}
+                  className="text-xs font-semibold text-[#6f5ad9] hover:text-[#1a1a1a] transition-colors"
+                >
+                  Open read-along view
+                </Link>
+              )}
+            </div>
           </div>
-        ) : (
-          <div className="w-12 h-12 rounded-lg bg-[#f0eeeb] flex-shrink-0 flex items-center justify-center text-[#1a1a1a] font-bold border border-[#e6e4e0]">
-            {currentTrack.title.charAt(0)}
-          </div>
-        )}
-        <div className="min-w-0">
-          <p className="text-sm font-bold text-[#1a1a1a] truncate">
-            {currentTrack.title}
-          </p>
-          {currentTrack.storySlug && (
-            <Link
-              href={`/stories/${currentTrack.storySlug}`}
-              className="text-xs font-semibold text-[#78756f] hover:text-[#1a1a1a] transition-colors truncate"
-            >
-              Return to story
-            </Link>
-          )}
-        </div>
-      </div>
 
-      {/* Progress (Center Desktop Only) */}
-      <div className="hidden md:flex flex-1 flex-col items-center px-4">
-        <div className="w-full flex items-center gap-2">
-          <span className="text-[10px] font-bold text-[#78756f] w-8 text-right tabular-nums">
+          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+            <button
+              onClick={toggleMute}
+              className="p-2.5 text-[#7f7a72] hover:text-[#1a1a1a] hover:bg-[#f7f6f1] rounded-full transition-colors"
+            >
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </button>
+            <button
+              onClick={togglePlay}
+              className="w-11 h-11 rounded-full bg-[#1a1a1a] text-[#fafaf8] flex items-center justify-center hover:scale-105 transition-transform"
+            >
+              {isPlaying ? (
+                <Pause className="w-5 h-5 fill-current" />
+              ) : (
+                <Play className="w-5 h-5 fill-current ml-0.5" />
+              )}
+            </button>
+            <button
+              onClick={closePlayer}
+              className="p-2 text-[#7f7a72] hover:text-[#1a1a1a] rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-2.5 flex items-center gap-2">
+          <span className="text-[10px] md:text-xs font-bold text-[#8d887f] tabular-nums w-8 text-right">
             {formatTime(progress)}
           </span>
           <input
@@ -96,44 +103,12 @@ export function GlobalAudioPlayer() {
             max={duration || 100}
             value={progress}
             onChange={handleProgressChange}
-            className="flex-1 h-1.5 bg-[#f0eeeb] rounded-full appearance-none cursor-pointer accent-[#1a1a1a]"
+            className="flex-1 h-1.5 md:h-2 bg-[#ece8df] rounded-full appearance-none cursor-pointer accent-[#6f5ad9]"
           />
-          <span className="text-[10px] font-bold text-[#78756f] w-8 tabular-nums">
+          <span className="text-[10px] md:text-xs font-bold text-[#8d887f] tabular-nums w-8">
             {formatTime(duration)}
           </span>
         </div>
-      </div>
-
-      {/* Actions (Right) */}
-      <div className="flex items-center justify-end gap-1 md:gap-2 shrink-0">
-        <button
-          onClick={toggleMute}
-          className="p-2 text-[#78756f] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors"
-        >
-          {isMuted ? (
-            <VolumeX className="w-4 h-4" />
-          ) : (
-            <Volume2 className="w-4 h-4" />
-          )}
-        </button>
-
-        <button
-          onClick={togglePlay}
-          className="w-10 h-10 rounded-full bg-[#1a1a1a] text-[#fafaf8] flex items-center justify-center hover:scale-105 transition-transform"
-        >
-          {isPlaying ? (
-            <Pause className="w-5 h-5 fill-current" />
-          ) : (
-            <Play className="w-5 h-5 fill-current ml-0.5" />
-          )}
-        </button>
-
-        <button
-          onClick={closePlayer}
-          className="p-2 pr-1 text-[#78756f] hover:text-[#1a1a1a] transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
       </div>
     </div>
   );

@@ -48,7 +48,7 @@ export function AudioPlayer({
     setLiveMessage("Playing");
   };
 
-  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProgressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!isThisTrackPlaying) return;
     const nextValue = Number(e.target.value);
     seek(nextValue);
@@ -116,7 +116,7 @@ export function AudioPlayer({
       >
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#e6e4e0] bg-white px-3 py-1.5 text-[11px] font-bold tracking-widest text-[#78756f] uppercase">
           <BookOpen className="h-3.5 w-3.5" /> Read + Listen
-        </div>
+        </PlayerBadge>
 
         <h3
           className={cn(
@@ -198,6 +198,6 @@ export function AudioPlayer({
           </div>
         </div>
       </div>
-    </div>
+    </PlayerShell>
   );
 }

@@ -1,9 +1,7 @@
 "use client";
 
 import { useAudio } from "@/contexts/AudioContext";
-import { Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { SoundWaveSeeker } from "@/components/story/SoundWaveSeeker";
 import { useEffect, useRef, useState } from "react";
@@ -169,7 +167,19 @@ export function GlobalAudioPlayer() {
             {formatTime(duration)}
           </span>
         </div>
+
+        <PlayerTimecodes
+          className="mt-3"
+          layout="inline"
+          seekerClassName="h-11 rounded-xl px-2.5 py-2"
+          labelClassName="text-[10px] md:text-xs"
+          value={progress}
+          max={duration}
+          onChange={handleProgressChange}
+          isPlaying={isPlaying}
+          barCount={36}
+        />
       </div>
-    </div>
+    </PlayerShell>
   );
 }

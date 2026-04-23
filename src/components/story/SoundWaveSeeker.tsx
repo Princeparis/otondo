@@ -7,33 +7,28 @@ interface SoundWaveSeekerProps {
   value: number;
   max: number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSeekStep?: (nextValue: number) => void;
+  onPlayPauseShortcut?: () => void;
   disabled?: boolean;
   isPlaying?: boolean;
   className?: string;
   barCount?: number;
-  interactiveLevel?: "low" | "medium" | "high";
-  showTooltip?: boolean;
-  showBeatPulse?: boolean;
-}
-
-function formatTooltipTime(time: number) {
-  if (Number.isNaN(time) || time < 0) return "0:00";
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  ariaLabel?: string;
+  ariaValueText?: string;
 }
 
 export function SoundWaveSeeker({
   value,
   max,
   onChange,
+  onSeekStep,
+  onPlayPauseShortcut,
   disabled,
   isPlaying,
   className,
   barCount = 44,
-  interactiveLevel = "medium",
-  showTooltip = true,
-  showBeatPulse = true,
+  ariaLabel = "Seek audio position",
+  ariaValueText,
 }: SoundWaveSeekerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [hoverRatio, setHoverRatio] = useState<number | null>(null);
@@ -53,53 +48,26 @@ export function SoundWaveSeeker({
     [barCount],
   );
 
-  const getRatioFromClientX = (clientX: number) => {
-    const input = inputRef.current;
-    if (!input) return null;
-    const rect = input.getBoundingClientRect();
-    if (!rect.width) return null;
-    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return;
 
-  const updateRatioFromPointer = (clientX: number, scrubbing: boolean) => {
-    const ratio = getRatioFromClientX(clientX);
-    if (ratio === null) return;
-    if (scrubbing) {
-      setScrubRatio(ratio);
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      onSeekStep?.(Math.max(0, value - 5));
       return;
     }
-    setHoverRatio(ratio);
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      onSeekStep?.(Math.min(safeMax, value + 5));
+      return;
+    }
+
+    if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      onPlayPauseShortcut?.();
+    }
   };
-
-  const previewRatio = scrubRatio ?? hoverRatio;
-  const activeHeadRatio = previewRatio ?? progressRatio;
-
-
-  const isScrubbing = scrubRatio !== null;
-  const interactionState = disabled
-    ? "idle"
-    : isScrubbing
-      ? "dragging"
-      : isPointerOver
-        ? "hover"
-        : isPlaying
-          ? "playing-active-head"
-          : "idle";
-
-  const shouldShowTooltip =
-    showTooltip &&
-    !disabled &&
-    activeHeadRatio !== null &&
-    (isPointerOver || isScrubbing || isFocused);
-
-  const tooltipSeconds = Math.round((activeHeadRatio ?? 0) * safeMax);
-
-  const intensityClasses =
-    interactiveLevel === "high"
-      ? "gap-1"
-      : interactiveLevel === "low"
-        ? "gap-1.5"
-        : "gap-1.25";
 
   return (
     <div
@@ -159,60 +127,12 @@ export function SoundWaveSeeker({
         min={0}
         max={safeMax}
         value={Math.min(value, safeMax)}
-        onChange={(event) => {
-          if (!disabled && isFocused) {
-            const nextRatio = Math.max(0, Math.min(1, Number(event.target.value) / safeMax));
-            setHoverRatio(nextRatio);
-          }
-          onChange(event);
-        }}
-        onPointerEnter={(event) => {
-          if (disabled) return;
-          setIsPointerOver(true);
-          updateRatioFromPointer(event.clientX, false);
-        }}
-        onPointerMove={(event) => {
-          if (disabled) return;
-          updateRatioFromPointer(event.clientX, isScrubbing);
-        }}
-        onPointerLeave={() => {
-          setIsPointerOver(false);
-          if (!isScrubbing && !isFocused) {
-            setHoverRatio(null);
-          }
-        }}
-        onPointerDown={(event) => {
-          if (disabled) return;
-          setIsPointerOver(true);
-          updateRatioFromPointer(event.clientX, true);
-        }}
-        onPointerUp={() => {
-          setScrubRatio(null);
-          if (!isFocused) {
-            setHoverRatio(null);
-          }
-        }}
-        onBlur={() => {
-          setIsFocused(false);
-          setHoverRatio(null);
-          setScrubRatio(null);
-        }}
-        onFocus={() => {
-          if (disabled) return;
-          setIsFocused(true);
-          setHoverRatio(progressRatio);
-        }}
-        onKeyDown={(event) => {
-          if (disabled) return;
-          if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"].includes(event.key)) {
-            const current = Number((event.currentTarget as HTMLInputElement).value);
-            const nextRatio = Math.max(0, Math.min(1, current / safeMax));
-            setHoverRatio(nextRatio);
-          }
-        }}
+        onChange={onChange}
+        onKeyDown={handleKeyDown}
         disabled={disabled}
-        className="waveform-range-input absolute inset-0 z-20 h-full w-full cursor-pointer appearance-none rounded-2xl bg-transparent disabled:cursor-not-allowed"
-        aria-label="Seek audio position"
+        className="waveform-range-input focus-visible-ring absolute inset-0 z-20 h-full w-full cursor-pointer appearance-none rounded-2xl bg-transparent disabled:cursor-not-allowed"
+        aria-label={ariaLabel}
+        aria-valuetext={ariaValueText}
       />
     </div>
   );

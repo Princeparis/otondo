@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 
 interface SoundWaveSeekerProps {
   value: number;
@@ -30,6 +30,12 @@ export function SoundWaveSeeker({
   ariaLabel = "Seek audio position",
   ariaValueText,
 }: SoundWaveSeekerProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [hoverRatio, setHoverRatio] = useState<number | null>(null);
+  const [scrubRatio, setScrubRatio] = useState<number | null>(null);
+  const [isPointerOver, setIsPointerOver] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
   const safeMax = max > 0 ? max : 100;
   const progressRatio = Math.max(0, Math.min(1, value / safeMax));
 
@@ -65,17 +71,18 @@ export function SoundWaveSeeker({
 
   return (
     <div
+      data-interaction-state={interactionState}
       className={cn(
-        "group relative isolate h-14 w-full rounded-2xl border border-[#e7e1ff] bg-linear-to-r from-[#f7f4ff] via-white to-[#f6f2ff] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
+        "group relative isolate h-14 w-full rounded-2xl border border-[#e7e1ff] bg-linear-to-r from-[#f7f4ff] via-white to-[#f6f2ff] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] transition-transform duration-250 ease-out data-[interaction-state=dragging]:scale-[1.01] data-[interaction-state=dragging]:shadow-[0_16px_28px_-24px_rgba(45,31,95,0.85),inset_0_1px_0_rgba(255,255,255,0.8)]",
         disabled && "opacity-60",
         className,
       )}
     >
-      <div className="relative z-10 flex h-full items-end gap-1">
+      <div className={cn("relative z-10 flex h-full items-end", intensityClasses)}>
         {bars.map((height, index) => {
           const barPosition = (index + 1) / bars.length;
           const passed = barPosition <= progressRatio;
-          const nearHead = Math.abs(barPosition - progressRatio) < 0.06;
+          const nearHead = Math.abs(barPosition - activeHeadRatio) < (isScrubbing ? 0.11 : 0.06);
 
           return (
             <span
@@ -85,7 +92,8 @@ export function SoundWaveSeeker({
                 passed
                   ? "bg-linear-to-t from-[#6f5ad9] via-[#836bff] to-[#a08eff]"
                   : "bg-[#ddd7f5]",
-                isPlaying && nearHead && !disabled && "wave-bar-live",
+                showBeatPulse && isPlaying && nearHead && !disabled && !isScrubbing && "wave-bar-live",
+                showBeatPulse && nearHead && !disabled && isScrubbing && "wave-bar-scrub",
                 !disabled && "group-hover:brightness-110",
               )}
               style={{
@@ -99,11 +107,22 @@ export function SoundWaveSeeker({
       </div>
 
       <div
-        className="pointer-events-none absolute inset-y-2.5 left-0 z-0 rounded-full bg-linear-to-r from-[#6f5ad9]/18 to-[#a08eff]/22 transition-[width] duration-200"
+        className="wave-progress-fill pointer-events-none absolute inset-y-2.5 left-0 z-0 rounded-full bg-linear-to-r from-[#6f5ad9]/18 to-[#a08eff]/22"
         style={{ width: `${progressRatio * 100}%` }}
       />
 
+      {shouldShowTooltip && (
+        <div
+          className="pointer-events-none absolute top-0 z-30 -translate-x-1/2 -translate-y-[130%] rounded-full border border-[#ddd3ff] bg-white px-2 py-1 text-[10px] font-bold tracking-wide text-[#5e4bbb] shadow-[0_8px_20px_-14px_rgba(45,31,95,0.9)]"
+          style={{ left: `${(activeHeadRatio ?? 0) * 100}%` }}
+          aria-hidden
+        >
+          {formatTooltipTime(tooltipSeconds)}
+        </div>
+      )}
+
       <input
+        ref={inputRef}
         type="range"
         min={0}
         max={safeMax}

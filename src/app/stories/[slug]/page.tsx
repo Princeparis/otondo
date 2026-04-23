@@ -127,8 +127,9 @@ export default async function StoryDetailPage({
               readStoryButton={
                 <div className="lg:hidden flex items-center justify-center">
                   <DrawerTrigger asChild>
-                    <button className="p-3 text-[#b0ada8] hover:text-[#1a1a1a] hover:bg-[#f0eeeb] rounded-full transition-colors disabled:opacity-50">
-                      <BookOpen size={24} />
+                    <button className="inline-flex h-12 items-center gap-2 rounded-full border border-white/90 bg-white/80 px-4 text-[11px] font-black uppercase tracking-[0.16em] text-[#6f5ad9] shadow-[0_16px_28px_-20px_rgba(42,28,120,0.95)] backdrop-blur-sm transition-colors hover:bg-white disabled:opacity-50">
+                      <BookOpen size={18} />
+                      Read mode
                     </button>
                   </DrawerTrigger>
                 </div>

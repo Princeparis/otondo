@@ -37,7 +37,7 @@ export function SoundWaveSeeker({
   return (
     <div
       className={cn(
-        "group relative isolate h-14 w-full rounded-2xl border border-[#e7e1ff] bg-linear-to-r from-[#f7f4ff] via-white to-[#f6f2ff] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
+        "group relative isolate h-14 w-full rounded-2xl border border-audio-border bg-linear-to-r from-audio-tint/70 via-card to-audio-tint/60 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
         disabled && "opacity-60",
         className,
       )}
@@ -54,8 +54,8 @@ export function SoundWaveSeeker({
               className={cn(
                 "wave-bar inline-block w-full max-w-[6px] rounded-full transition-all duration-300 ease-out",
                 passed
-                  ? "bg-linear-to-t from-[#6f5ad9] via-[#836bff] to-[#a08eff]"
-                  : "bg-[#ddd7f5]",
+                  ? "bg-linear-to-t from-audio-accent via-audio-accent/80 to-audio-accent/60"
+                  : "bg-audio-border/80",
                 isPlaying && nearHead && !disabled && "wave-bar-live",
                 !disabled && "group-hover:brightness-110",
               )}
@@ -70,7 +70,7 @@ export function SoundWaveSeeker({
       </div>
 
       <div
-        className="pointer-events-none absolute inset-y-2.5 left-0 z-0 rounded-full bg-linear-to-r from-[#6f5ad9]/18 to-[#a08eff]/22 transition-[width] duration-200"
+        className="pointer-events-none absolute inset-y-2.5 left-0 z-0 rounded-full bg-linear-to-r from-audio-accent/15 to-audio-accent/20 transition-[width] duration-200"
         style={{ width: `${progressRatio * 100}%` }}
       />
 

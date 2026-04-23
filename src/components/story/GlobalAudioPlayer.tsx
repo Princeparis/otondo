@@ -80,12 +80,20 @@ export function GlobalAudioPlayer() {
                 {currentTrack.title.charAt(0)}
               </div>
             )}
-            <div className="min-w-0">
-              <p className="truncate text-sm font-black text-[#1a1a1a] md:text-base">{currentTrack.title}</p>
-              {currentTrack.storySlug && (
+            <div className="min-w-0 flex-1 space-y-1">
+              <p
+                className={cn(
+                  "truncate leading-tight font-black text-[#1a1a1a]",
+                  responsiveRules.typography.title,
+                )}
+                title={currentTrack.title}
+              >
+                {currentTrack.title}
+              </p>
+              {currentTrack.storySlug && layoutRules.readAlongLink.visibility === "always-visible" && (
                 <Link
                   href={`/stories/${currentTrack.storySlug}`}
-                  className="text-xs font-semibold text-[#6f5ad9] transition-colors hover:text-[#1a1a1a]"
+                  className="block truncate text-xs font-semibold text-[#6f5ad9] transition-colors hover:text-[#1a1a1a]"
                 >
                   Open read-along view
                 </Link>
@@ -94,7 +102,7 @@ export function GlobalAudioPlayer() {
           </div>
 
           <div className="shrink-0 rounded-2xl border border-[#ebe6ff] bg-[#faf9ff] px-1.5 py-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-            <div className="flex items-center gap-1.5 md:gap-2">
+            <div className={cn("flex items-center", responsiveRules.spacing.inline)}>
               <button
                 onClick={() => {
                   toggleMute();
@@ -139,12 +147,12 @@ export function GlobalAudioPlayer() {
           </div>
         </div>
 
-        <div className="mt-3 flex items-center gap-2">
-          <span className="w-8 text-right text-[10px] font-bold tabular-nums text-[#8d887f] md:text-xs">
+        <div className={cn("mt-3 flex items-center", responsiveRules.waveform.density)}>
+          <span className={cn("w-8 text-right font-bold tabular-nums text-[#8d887f]", responsiveRules.typography.meta)}>
             {formatTime(progress)}
           </span>
           <SoundWaveSeeker
-            className="h-11 rounded-xl px-2.5 py-2"
+            className={cn(responsiveRules.waveform.height, responsiveRules.waveform.container)}
             value={progress}
             max={duration || 100}
             onChange={handleProgressChange}
@@ -157,7 +165,7 @@ export function GlobalAudioPlayer() {
             barCount={36}
             ariaValueText={`${formatTime(progress)} of ${formatTime(duration)}`}
           />
-          <span className="w-8 text-[10px] font-bold tabular-nums text-[#8d887f] md:text-xs">
+          <span className={cn("w-8 font-bold tabular-nums text-[#8d887f]", responsiveRules.typography.meta)}>
             {formatTime(duration)}
           </span>
         </div>

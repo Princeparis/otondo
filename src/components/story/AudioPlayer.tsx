@@ -30,6 +30,8 @@ export function AudioPlayer({
     toggleMute,
     seek,
   } = useAudio();
+  const breakpoint = usePlayerBreakpoint();
+  const responsiveRules = PLAYER_BREAKPOINT_RULES[breakpoint];
 
   const isThisTrackPlaying = currentTrack?.url === audioUrl;
   const [liveMessage, setLiveMessage] = useState("");
@@ -106,17 +108,31 @@ export function AudioPlayer({
         <div className="atmospheric-float absolute inset-0 bg-linear-to-t from-[#fafaf8] via-[#fafaf8]/55 to-transparent motion-reduce:animate-none" />
       </div>
 
-      <div className="-mt-12 flex flex-none flex-col items-center rounded-t-[2.5rem] border-t border-[#ece8df] bg-[#fafaf8]/95 p-7 shadow-[0_-16px_36px_-20px_rgba(38,24,93,0.45)] backdrop-blur lg:p-10">
+      <div
+        className={cn(
+          "pointer-events-none -mt-12 flex flex-none flex-col items-center rounded-t-[2.5rem] border-t border-[#ece8df] bg-[#fafaf8]/95 shadow-[0_-16px_36px_-20px_rgba(38,24,93,0.45)] backdrop-blur",
+          responsiveRules.spacing.pageSurfacePadding,
+        )}
+      >
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#e6e4e0] bg-white px-3 py-1.5 text-[11px] font-bold tracking-widest text-[#78756f] uppercase">
           <BookOpen className="h-3.5 w-3.5" /> Read + Listen
         </div>
 
-        <h3 className="mb-5 line-clamp-2 max-w-sm px-3 text-center text-2xl leading-tight font-black text-[#1a1a1a]">
+        <h3
+          className={cn(
+            "min-h-[3.5rem] line-clamp-2 max-w-sm px-3 text-center leading-tight font-black text-[#1a1a1a]",
+            responsiveRules.typography.title,
+          )}
+        >
           {title}
         </h3>
 
-        <div className="mb-6 w-full max-w-sm">
+        <div className="pointer-events-auto mt-4 w-full max-w-sm">
           <SoundWaveSeeker
+            className={cn(
+              responsiveRules.waveform.height,
+              responsiveRules.waveform.container,
+            )}
             value={displayProgress}
             max={displayDuration || 100}
             onChange={handleProgressChange}
@@ -126,13 +142,18 @@ export function AudioPlayer({
             isPlaying={isActuallyPlaying}
             ariaValueText={seekValueText}
           />
-          <div className="mt-2.5 flex justify-between px-1 text-[11px] font-bold tabular-nums text-[#938f88]">
+          <div
+            className={cn(
+              "mt-2.5 flex justify-between px-1 font-bold tabular-nums text-[#938f88]",
+              responsiveRules.typography.meta,
+            )}
+          >
             <span>{formatTime(displayProgress)}</span>
             <span>{formatTime(displayDuration)}</span>
           </div>
         </div>
 
-        <div className="mb-2 grid w-full grid-cols-3 items-center">
+        <div className="pointer-events-auto mt-5 grid w-full max-w-sm grid-cols-3 items-center">
           <div className="flex justify-end pr-4 sm:pr-8">
             <button
               onClick={() => {
@@ -165,8 +186,15 @@ export function AudioPlayer({
             </button>
           </div>
 
-          <div className="flex justify-start pl-4 sm:pl-8">
-            {readStoryButton ? readStoryButton : <div className="w-[48px]" />}
+          <div className="flex min-h-11 justify-start pl-4 sm:pl-8">
+            {readStoryButton ? (
+              <>
+                <div className="sm:hidden h-11 w-11" aria-hidden />
+                <div className="hidden sm:inline-flex">{readStoryButton}</div>
+              </>
+            ) : (
+              <div className="h-11 w-11" />
+            )}
           </div>
         </div>
       </div>

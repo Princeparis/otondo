@@ -86,6 +86,9 @@ export function AudioPlayer({
             onChange={handleProgressChange}
             disabled={!isThisTrackPlaying}
             isPlaying={isActuallyPlaying}
+            interactiveLevel="medium"
+            showTooltip
+            showBeatPulse
           />
           <div className="mt-2.5 flex justify-between px-1 text-[11px] font-bold tabular-nums text-[#938f88]">
             <span>{formatTime(displayProgress)}</span>

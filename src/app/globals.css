@@ -195,3 +195,75 @@ html.lenis body {
     filter: saturate(120%);
   }
 }
+
+.waveform-range-input:focus-visible {
+  outline: none;
+}
+
+.waveform-range-input:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.98),
+    0 0 0 6px rgba(111, 90, 217, 0.38),
+    0 10px 20px -10px rgba(45, 31, 95, 0.95);
+}
+
+.waveform-range-input:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.98),
+    0 0 0 6px rgba(111, 90, 217, 0.38),
+    0 10px 20px -10px rgba(45, 31, 95, 0.95);
+}
+
+[data-interaction-state="dragging"] .waveform-range-input::-webkit-slider-thumb {
+  transform: scale(1.06);
+  box-shadow: 0 14px 24px -14px rgba(45, 31, 95, 0.92);
+}
+
+[data-interaction-state="dragging"] .waveform-range-input::-moz-range-thumb {
+  transform: scale(1.06);
+  box-shadow: 0 14px 24px -14px rgba(45, 31, 95, 0.92);
+}
+
+.waveform-range-input::-webkit-slider-thumb,
+.waveform-range-input::-moz-range-thumb {
+  transition:
+    transform 180ms ease,
+    box-shadow 220ms ease,
+    filter 220ms ease;
+}
+
+.wave-progress-fill {
+  transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wave-bar-scrub {
+  animation: waveScrubPulse 0.65s ease-in-out infinite;
+}
+
+@keyframes waveScrubPulse {
+  0%,
+  100% {
+    transform: scaleY(0.9);
+    filter: saturate(105%) brightness(1.02);
+  }
+  50% {
+    transform: scaleY(1.24);
+    filter: saturate(135%) brightness(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-bar-live,
+  .wave-bar-scrub {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .wave-bar,
+  .wave-progress-fill,
+  .waveform-range-input::-webkit-slider-thumb,
+  .waveform-range-input::-moz-range-thumb {
+    transition-duration: 1ms !important;
+  }
+}

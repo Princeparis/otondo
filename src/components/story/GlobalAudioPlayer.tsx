@@ -106,6 +106,9 @@ export function GlobalAudioPlayer() {
             onChange={handleProgressChange}
             isPlaying={isPlaying}
             barCount={36}
+            interactiveLevel="medium"
+            showTooltip
+            showBeatPulse
           />
           <span className="w-8 text-[10px] font-bold tabular-nums text-[#8d887f] md:text-xs">
             {formatTime(duration)}

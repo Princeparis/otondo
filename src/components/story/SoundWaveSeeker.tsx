@@ -80,7 +80,7 @@ export function SoundWaveSeeker({
     <div
       data-interaction-state={interactionState}
       className={cn(
-        "group relative isolate h-14 w-full overflow-hidden rounded-2xl border border-audio-border/80 bg-linear-to-r from-[#f6f2ff] via-white to-[#f1ecff] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_18px_30px_-28px_rgba(61,40,140,0.8)] transition duration-300 ease-out data-[interaction-state=dragging]:scale-[1.01] data-[interaction-state=dragging]:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_26px_44px_-28px_rgba(61,40,140,0.95)]",
+        "group relative isolate h-16 w-full overflow-hidden rounded-3xl border border-white/90 bg-linear-to-r from-[#eee7ff] via-[#fcfbff] to-[#ece5ff] px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_26px_45px_-34px_rgba(61,40,140,0.95)] transition duration-300 ease-out data-[interaction-state=dragging]:scale-[1.01] data-[interaction-state=dragging]:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_32px_56px_-32px_rgba(61,40,140,0.98)]",
         disabled && "opacity-60",
         className,
       )}
@@ -90,8 +90,10 @@ export function SoundWaveSeeker({
         setIsPointerDown(false);
       }}
     >
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_15%_15%,rgba(255,255,255,0.95),transparent_38%),radial-gradient(circle_at_85%_85%,rgba(138,118,255,0.2),transparent_40%)]" />
+      <div className="waveform-sheen pointer-events-none absolute -left-1/3 top-0 z-0 h-full w-1/3 bg-linear-to-r from-transparent via-white/55 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-0 bg-linear-to-r from-[#6f5ad9]/20 to-[#a08eff]/15 transition-all duration-200"
+        className="pointer-events-none absolute inset-y-0 left-0 z-0 bg-linear-to-r from-[#6f5ad9]/25 via-[#8f79ff]/20 to-[#b9adff]/15 transition-all duration-200"
         style={{ width: `${progressRatio * 100}%` }}
       />
 
@@ -107,8 +109,8 @@ export function SoundWaveSeeker({
               className={cn(
                 "wave-bar block h-full w-full max-w-[6px] rounded-full transition-all duration-250",
                 isPassed
-                  ? "bg-linear-to-t from-[#6f5ad9] via-[#846dff] to-[#b4a4ff]"
-                  : "bg-[#dcd5f8]",
+                  ? "bg-linear-to-t from-[#5f49d7] via-[#7f69ff] to-[#b5a8ff]"
+                  : "bg-[#d6cef7]",
                 isNearHead && !disabled && isPlaying && "wave-bar-live",
                 !disabled && "group-hover:brightness-110",
               )}

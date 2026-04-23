@@ -65,12 +65,15 @@ export function PlayerControls({
   }
 
   return (
-    <div className="mb-2 grid w-full grid-cols-3 items-center">
-      <div className="flex justify-end pr-4 sm:pr-8">
+    <div className="mb-2 grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2">
+      <div className="flex justify-end pr-2 sm:pr-6">
         <button
           onClick={onMute}
           disabled={muteDisabled}
-          className={getIconButtonClassName("immersive")}
+          className={cn(
+            getIconButtonClassName("immersive"),
+            "border border-white/90 bg-white/80 shadow-[0_16px_28px_-20px_rgba(42,28,120,0.95)] backdrop-blur-sm hover:bg-white",
+          )}
           aria-label={muteState.label}
         >
           <muteState.Icon size={22} />
@@ -80,14 +83,19 @@ export function PlayerControls({
       <div className="flex justify-center">
         <button
           onClick={onPlayPause}
-          className={getPrimaryButtonClassName("immersive")}
+          className={cn(
+            getPrimaryButtonClassName("immersive"),
+            "shadow-[0_24px_40px_-24px_rgba(35,23,99,1)] ring-1 ring-white/85",
+          )}
           aria-label={playState.label}
         >
           <playState.Icon className={cn("h-[34px] w-[34px]", playState.iconClassName)} />
         </button>
       </div>
 
-      <div className="flex justify-start pl-4 sm:pl-8">{rightSlot ?? <div className="w-[48px]" />}</div>
+      <div className="flex justify-start pl-2 sm:pl-6">
+        {rightSlot ?? <div className="h-12 w-12" aria-hidden />}
+      </div>
     </div>
   );
 }

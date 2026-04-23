@@ -19,7 +19,18 @@ export function PlayerArtwork({
           dense ? "h-12 w-12 rounded-xl md:h-14 md:w-14" : "h-full w-full",
         )}
       >
-        <Image src={coverUrl} alt={title} fill className="object-cover" />
+        <Image
+          src={coverUrl}
+          alt={title}
+          fill
+          className={cn(
+            "object-cover",
+            !dense && "scale-[1.03] saturate-[1.08] contrast-[1.05]",
+          )}
+        />
+        {!dense ? (
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.36),transparent_46%),linear-gradient(to_top,rgba(250,250,248,0.85),transparent_35%)]" />
+        ) : null}
       </div>
     );
   }

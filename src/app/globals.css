@@ -216,6 +216,10 @@ html.lenis body {
   animation: atmosphericFloat 10s ease-in-out infinite alternate;
 }
 
+.group:hover .waveform-sheen {
+  animation: waveformSweep 1.45s ease-in-out;
+}
+
 @keyframes wavePulse {
   0%,
   100% {
@@ -237,10 +241,20 @@ html.lenis body {
   }
 }
 
+@keyframes waveformSweep {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(430%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wave-bar,
   .wave-bar-live,
   .atmospheric-float,
+  .waveform-sheen,
   .waveform-range-input,
   .focus-visible-ring {
     animation: none !important;

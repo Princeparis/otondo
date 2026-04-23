@@ -7,20 +7,28 @@ interface SoundWaveSeekerProps {
   value: number;
   max: number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSeekStep?: (nextValue: number) => void;
+  onPlayPauseShortcut?: () => void;
   disabled?: boolean;
   isPlaying?: boolean;
   className?: string;
   barCount?: number;
+  ariaLabel?: string;
+  ariaValueText?: string;
 }
 
 export function SoundWaveSeeker({
   value,
   max,
   onChange,
+  onSeekStep,
+  onPlayPauseShortcut,
   disabled,
   isPlaying,
   className,
   barCount = 44,
+  ariaLabel = "Seek audio position",
+  ariaValueText,
 }: SoundWaveSeekerProps) {
   const safeMax = max > 0 ? max : 100;
   const progressRatio = Math.max(0, Math.min(1, value / safeMax));
@@ -33,6 +41,27 @@ export function SoundWaveSeeker({
       }),
     [barCount],
   );
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return;
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      onSeekStep?.(Math.max(0, value - 5));
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      onSeekStep?.(Math.min(safeMax, value + 5));
+      return;
+    }
+
+    if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      onPlayPauseShortcut?.();
+    }
+  };
 
   return (
     <div
@@ -80,9 +109,11 @@ export function SoundWaveSeeker({
         max={safeMax}
         value={Math.min(value, safeMax)}
         onChange={onChange}
+        onKeyDown={handleKeyDown}
         disabled={disabled}
-        className="waveform-range-input absolute inset-0 z-20 h-full w-full cursor-pointer appearance-none rounded-2xl bg-transparent disabled:cursor-not-allowed"
-        aria-label="Seek audio position"
+        className="waveform-range-input focus-visible-ring absolute inset-0 z-20 h-full w-full cursor-pointer appearance-none rounded-2xl bg-transparent disabled:cursor-not-allowed"
+        aria-label={ariaLabel}
+        aria-valuetext={ariaValueText}
       />
     </div>
   );

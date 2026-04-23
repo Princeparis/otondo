@@ -202,6 +202,20 @@ html.lenis body {
   animation: wavePulse 0.95s ease-in-out infinite;
 }
 
+.focus-visible-ring {
+  outline: none;
+}
+
+.focus-visible-ring:focus-visible {
+  box-shadow:
+    0 0 0 3px #ffffff,
+    0 0 0 5px #4d3bb8;
+}
+
+.atmospheric-float {
+  animation: atmosphericFloat 10s ease-in-out infinite alternate;
+}
+
 @keyframes wavePulse {
   0%,
   100% {
@@ -211,5 +225,25 @@ html.lenis body {
   50% {
     transform: scaleY(1.16);
     filter: saturate(120%);
+  }
+}
+
+@keyframes atmosphericFloat {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-bar,
+  .wave-bar-live,
+  .atmospheric-float,
+  .waveform-range-input,
+  .focus-visible-ring {
+    animation: none !important;
+    transition-duration: 0ms !important;
   }
 }

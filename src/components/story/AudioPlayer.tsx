@@ -4,6 +4,8 @@ import { useAudio } from "@/contexts/AudioContext";
 import { BookOpen, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
 import { SoundWaveSeeker } from "@/components/story/SoundWaveSeeker";
+import { cn } from "@/lib/utils";
+import { PLAYER_BREAKPOINT_RULES, usePlayerBreakpoint } from "@/components/story/playerBreakpoints";
 
 export function AudioPlayer({
   audioUrl,
@@ -29,6 +31,8 @@ export function AudioPlayer({
     toggleMute,
     seek,
   } = useAudio();
+  const breakpoint = usePlayerBreakpoint();
+  const responsiveRules = PLAYER_BREAKPOINT_RULES[breakpoint];
 
   const isThisTrackPlaying = currentTrack?.url === audioUrl;
 
@@ -70,35 +74,59 @@ export function AudioPlayer({
         <div className="absolute inset-0 bg-linear-to-t from-[#fafaf8] via-[#fafaf8]/55 to-transparent" />
       </div>
 
-      <div className="-mt-12 flex flex-none flex-col items-center rounded-t-[2.5rem] border-t border-[#ece8df] bg-[#fafaf8]/95 p-7 shadow-[0_-16px_36px_-20px_rgba(38,24,93,0.45)] backdrop-blur lg:p-10">
+      <div
+        className={cn(
+          "pointer-events-none -mt-12 flex flex-none flex-col items-center rounded-t-[2.5rem] border-t border-[#ece8df] bg-[#fafaf8]/95 shadow-[0_-16px_36px_-20px_rgba(38,24,93,0.45)] backdrop-blur",
+          responsiveRules.spacing.pageSurfacePadding,
+        )}
+      >
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#e6e4e0] bg-white px-3 py-1.5 text-[11px] font-bold tracking-widest text-[#78756f] uppercase">
           <BookOpen className="h-3.5 w-3.5" /> Read + Listen
         </div>
 
-        <h3 className="mb-5 line-clamp-2 max-w-sm px-3 text-center text-2xl leading-tight font-black text-[#1a1a1a]">
+        <h3
+          className={cn(
+            "min-h-[3.5rem] line-clamp-2 max-w-sm px-3 text-center leading-tight font-black text-[#1a1a1a]",
+            responsiveRules.typography.title,
+          )}
+        >
           {title}
         </h3>
 
-        <div className="mb-6 w-full max-w-sm">
+        <div className="pointer-events-auto mt-4 w-full max-w-sm">
           <SoundWaveSeeker
+            className={cn(
+              responsiveRules.waveform.height,
+              responsiveRules.waveform.container,
+            )}
             value={displayProgress}
             max={displayDuration || 100}
             onChange={handleProgressChange}
             disabled={!isThisTrackPlaying}
             isPlaying={isActuallyPlaying}
+            barCount={responsiveRules.waveform.barCount}
           />
-          <div className="mt-2.5 flex justify-between px-1 text-[11px] font-bold tabular-nums text-[#938f88]">
+          <div
+            className={cn(
+              "mt-2.5 flex justify-between px-1 font-bold tabular-nums text-[#938f88]",
+              responsiveRules.typography.meta,
+            )}
+          >
             <span>{formatTime(displayProgress)}</span>
             <span>{formatTime(displayDuration)}</span>
           </div>
         </div>
 
-        <div className="mb-2 grid w-full grid-cols-3 items-center">
+        <div className="pointer-events-auto mt-5 grid w-full max-w-sm grid-cols-3 items-center">
           <div className="flex justify-end pr-4 sm:pr-8">
             <button
               onClick={toggleMute}
               disabled={!isThisTrackPlaying}
-              className="rounded-full p-3 text-[#8f8b85] transition-colors hover:bg-[#f0eeeb] hover:text-[#1a1a1a] disabled:opacity-50"
+              className={cn(
+                "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-[#8f8b85] transition-colors hover:bg-[#f0eeeb] hover:text-[#1a1a1a] disabled:opacity-50",
+                responsiveRules.controlSize,
+              )}
+              aria-label={isMuted && isThisTrackPlaying ? "Unmute audio" : "Mute audio"}
             >
               {isMuted && isThisTrackPlaying ? <VolumeX size={22} /> : <Volume2 size={22} />}
             </button>
@@ -107,14 +135,25 @@ export function AudioPlayer({
           <div className="flex justify-center">
             <button
               onClick={handlePlayClick}
-              className="flex h-[78px] w-[78px] items-center justify-center rounded-full bg-[#1a1a1a] text-[#fafaf8] shadow-[0_14px_30px_-12px_rgba(45,31,95,0.6)] transition-all hover:scale-105"
+              className={cn(
+                "flex min-h-11 min-w-11 items-center justify-center rounded-full bg-[#1a1a1a] text-[#fafaf8] shadow-[0_14px_30px_-12px_rgba(45,31,95,0.6)] transition-all hover:scale-105",
+                responsiveRules.playControlSize,
+              )}
+              aria-label={isActuallyPlaying ? "Pause audio" : "Play audio"}
             >
               {isActuallyPlaying ? <Pause size={34} className="fill-current" /> : <Play size={34} className="ml-1 fill-current" />}
             </button>
           </div>
 
-          <div className="flex justify-start pl-4 sm:pl-8">
-            {readStoryButton ? readStoryButton : <div className="w-[48px]" />}
+          <div className="flex min-h-11 justify-start pl-4 sm:pl-8">
+            {readStoryButton ? (
+              <>
+                <div className="sm:hidden h-11 w-11" aria-hidden />
+                <div className="hidden sm:inline-flex">{readStoryButton}</div>
+              </>
+            ) : (
+              <div className="h-11 w-11" />
+            )}
           </div>
         </div>
       </div>

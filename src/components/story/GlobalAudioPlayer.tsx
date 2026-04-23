@@ -6,12 +6,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { SoundWaveSeeker } from "@/components/story/SoundWaveSeeker";
-import { cn } from "@/lib/utils";
-import {
-  PLAYER_BREAKPOINT_RULES,
-  PLAYER_LAYOUT_MATRIX,
-  usePlayerBreakpoint,
-} from "@/components/story/playerBreakpoints";
+import { useEffect, useRef, useState } from "react";
 
 export function GlobalAudioPlayer() {
   const {
@@ -27,9 +22,14 @@ export function GlobalAudioPlayer() {
   } = useAudio();
 
   const pathname = usePathname();
-  const breakpoint = usePlayerBreakpoint();
-  const responsiveRules = PLAYER_BREAKPOINT_RULES[breakpoint];
-  const layoutRules = PLAYER_LAYOUT_MATRIX[breakpoint];
+  const [liveMessage, setLiveMessage] = useState("");
+  const seekAnnounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (seekAnnounceTimer.current) clearTimeout(seekAnnounceTimer.current);
+    };
+  }, []);
+
   if (!currentTrack) return null;
 
   if (["/login", "/signup", "/admin/login"].includes(pathname)) return null;
@@ -46,22 +46,31 @@ export function GlobalAudioPlayer() {
   };
 
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    seek(Number(e.target.value));
+    const nextValue = Number(e.target.value);
+    seek(nextValue);
+    announceSeek(nextValue);
+  };
+
+  const announceSeek = (nextValue: number) => {
+    if (seekAnnounceTimer.current) clearTimeout(seekAnnounceTimer.current);
+    seekAnnounceTimer.current = setTimeout(() => {
+      setLiveMessage(`Seeked to ${formatTime(nextValue)}`);
+    }, 320);
+  };
+
+  const handleSeekStep = (nextValue: number) => {
+    seek(nextValue);
+    announceSeek(nextValue);
   };
 
   return (
-    <div
-      className="animate-in slide-in-from-bottom-5 fixed left-1/2 z-50 w-[calc(100%-1.25rem)] max-w-4xl -translate-x-1/2 duration-500"
-      style={{ bottom: "max(1rem, calc(env(safe-area-inset-bottom) + 0.5rem))" }}
-    >
-      <div
-        className={cn(
-          "rounded-3xl border border-[#dfd8ff] bg-white/95 shadow-[0_22px_60px_-30px_rgba(68,44,150,0.65)] backdrop-blur-xl",
-          responsiveRules.spacing.dockSurfacePadding,
-        )}
-      >
-        <div className="flex min-h-[56px] items-center gap-3">
-          <div className={cn("flex min-w-0 flex-1 items-center", responsiveRules.spacing.inline)}>
+    <div className="animate-in slide-in-from-bottom-5 motion-reduce:animate-none fixed bottom-4 left-1/2 z-50 w-[calc(100%-1.25rem)] max-w-4xl -translate-x-1/2 duration-500">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {liveMessage}
+      </div>
+      <div className="rounded-3xl border border-[#dfd8ff] bg-white/95 p-3 shadow-[0_22px_60px_-30px_rgba(68,44,150,0.65)] backdrop-blur-xl md:p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
             {currentTrack.coverUrl ? (
               <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-[#ece8df] bg-[#f0eeeb] md:h-14 md:w-14">
                 <Image src={currentTrack.coverUrl} alt={currentTrack.title} fill className="object-cover" />
@@ -95,22 +104,31 @@ export function GlobalAudioPlayer() {
           <div className="shrink-0 rounded-2xl border border-[#ebe6ff] bg-[#faf9ff] px-1.5 py-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
             <div className={cn("flex items-center", responsiveRules.spacing.inline)}>
               <button
-                onClick={toggleMute}
-                className={cn(
-                  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-[#7f7a72] transition-colors hover:bg-[#f7f6f1] hover:text-[#1a1a1a]",
-                  responsiveRules.controlSize,
-                )}
+                onClick={() => {
+                  toggleMute();
+                  setLiveMessage(isMuted ? "Unmuted" : "Muted");
+                }}
+                className="focus-visible-ring rounded-full p-2.5 text-[#625f59] transition-all duration-140 ease-out hover:bg-[#f7f6f1] hover:text-[#1a1a1a] active:scale-95"
                 aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+                aria-pressed={isMuted}
               >
                 {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
               </button>
               <button
-                onClick={togglePlay}
-                className={cn(
-                  "flex min-h-11 min-w-11 items-center justify-center rounded-full bg-[#1a1a1a] text-[#fafaf8] transition-transform hover:scale-105",
-                  responsiveRules.controlSize,
-                )}
+                onClick={() => {
+                  togglePlay();
+                  setLiveMessage(isPlaying ? "Paused" : "Playing");
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === " " || event.key === "Enter") {
+                    event.preventDefault();
+                    togglePlay();
+                    setLiveMessage(isPlaying ? "Paused" : "Playing");
+                  }
+                }}
+                className="focus-visible-ring flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a1a] text-[#fafaf8] transition-transform duration-140 ease-out hover:scale-105 active:scale-95"
                 aria-label={isPlaying ? "Pause audio" : "Play audio"}
+                aria-pressed={isPlaying}
               >
                 {isPlaying ? (
                   <Pause className="h-5 w-5 fill-current" />
@@ -120,11 +138,8 @@ export function GlobalAudioPlayer() {
               </button>
               <button
                 onClick={closePlayer}
-                className={cn(
-                  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-[#7f7a72] transition-colors hover:text-[#1a1a1a]",
-                  responsiveRules.controlSize,
-                )}
-                aria-label="Close player"
+                className="focus-visible-ring rounded-full p-2 text-[#625f59] transition-colors duration-140 ease-out hover:text-[#1a1a1a]"
+                aria-label="Close audio player"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -141,8 +156,14 @@ export function GlobalAudioPlayer() {
             value={progress}
             max={duration || 100}
             onChange={handleProgressChange}
+            onSeekStep={handleSeekStep}
+            onPlayPauseShortcut={() => {
+              togglePlay();
+              setLiveMessage(isPlaying ? "Paused" : "Playing");
+            }}
             isPlaying={isPlaying}
-            barCount={responsiveRules.waveform.barCount}
+            barCount={36}
+            ariaValueText={`${formatTime(progress)} of ${formatTime(duration)}`}
           />
           <span className={cn("w-8 font-bold tabular-nums text-[#8d887f]", responsiveRules.typography.meta)}>
             {formatTime(duration)}
